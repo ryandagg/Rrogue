@@ -12,12 +12,16 @@ import { dependencies as possibleExternals } from './package.json';
 function filterDepWithoutEntryPoints(dep: string): boolean {
     // Return true if we want to add a dependency to externals
     try {
-    // If the root of the dependency has an index.js, return true
-        if (fs.existsSync(path.join(__dirname, `node_modules/${dep}/index.js`))) {
+        // If the root of the dependency has an index.js, return true
+        if (
+            fs.existsSync(path.join(__dirname, `node_modules/${dep}/index.js`))
+        ) {
             return false;
         }
         const pgkString = fs
-            .readFileSync(path.join(__dirname, `node_modules/${dep}/package.json`))
+            .readFileSync(
+                path.join(__dirname, `node_modules/${dep}/package.json`)
+            )
             .toString();
         const pkg = JSON.parse(pgkString);
         const fields = ['main', 'module', 'jsnext:main', 'browser'];
@@ -31,7 +35,9 @@ function filterDepWithoutEntryPoints(dep: string): boolean {
 export default {
     externals: [
         ...Object.keys(externals || {}),
-        ...Object.keys(possibleExternals || {}).filter(filterDepWithoutEntryPoints),
+        ...Object.keys(possibleExternals || {}).filter(
+            filterDepWithoutEntryPoints
+        ),
     ],
 
     module: {
@@ -56,8 +62,8 @@ export default {
     },
 
     /**
-   * Determine the array of extensions that should be used to resolve modules.
-   */
+     * Determine the array of extensions that should be used to resolve modules.
+     */
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
         modules: [path.join(__dirname, 'app'), 'node_modules'],

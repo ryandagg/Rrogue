@@ -13,15 +13,15 @@ import { dependencies } from '../../package.json';
         .filter(folder => fs.existsSync(`node_modules/${folder}/binding.gyp`));
 
     try {
-    // Find the reason for why the dependency is installed. If it is installed
-    // because of a devDependency then that is okay. Warn when it is installed
-    // because of a dependency
+        // Find the reason for why the dependency is installed. If it is installed
+        // because of a devDependency then that is okay. Warn when it is installed
+        // because of a dependency
         const dependenciesObject = JSON.parse(
             execSync(`npm ls ${nativeDeps.join(' ')} --json`).toString()
         );
         const rootDependencies = Object.keys(dependenciesObject.dependencies);
-        const filteredRootDependencies = rootDependencies.filter(rootDependency =>
-            dependenciesKeys.includes(rootDependency)
+        const filteredRootDependencies = rootDependencies.filter(
+            rootDependency => dependenciesKeys.includes(rootDependency)
         );
 
         if (filteredRootDependencies.length > 0) {

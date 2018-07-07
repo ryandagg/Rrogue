@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'production') {
 
 if (
     process.env.NODE_ENV === 'development' ||
-  process.env.DEBUG_PROD === 'true'
+    process.env.DEBUG_PROD === 'true'
 ) {
     require('electron-debug')();
     const path = require('path');
@@ -36,7 +36,9 @@ const installExtensions = async() => {
     const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
     return Promise.all(
-        extensions.map(name => installer.default(installer[name], forceDownload))
+        extensions.map(name =>
+            installer.default(installer[name], forceDownload)
+        )
     ).catch(console.log);
 };
 
@@ -55,7 +57,7 @@ app.on('window-all-closed', () => {
 app.on('ready', async() => {
     if (
         process.env.NODE_ENV === 'development' ||
-    process.env.DEBUG_PROD === 'true'
+        process.env.DEBUG_PROD === 'true'
     ) {
         await installExtensions();
     }

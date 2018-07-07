@@ -88,7 +88,8 @@ export default merge.smart(baseConfig, {
                                 modules: true,
                                 minimize: true,
                                 importLoaders: 1,
-                                localIdentName: '[name]__[local]__[hash:base64:5]',
+                                localIdentName:
+                                    '[name]__[local]__[hash:base64:5]',
                             },
                         },
                         {
@@ -155,15 +156,15 @@ export default merge.smart(baseConfig, {
     },
 
     plugins: [
-    /**
-     * Create global constants which can be configured at compile time.
-     *
-     * Useful for allowing different behaviour between development builds and
-     * release builds
-     *
-     * NODE_ENV should be production so that modules do not perform certain
-     * development checks
-     */
+        /**
+         * Create global constants which can be configured at compile time.
+         *
+         * Useful for allowing different behaviour between development builds and
+         * release builds
+         *
+         * NODE_ENV should be production so that modules do not perform certain
+         * development checks
+         */
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
         }),
@@ -177,7 +178,7 @@ export default merge.smart(baseConfig, {
 
         new BundleAnalyzerPlugin({
             analyzerMode:
-        process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
+                process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
             openAnalyzer: process.env.OPEN_ANALYZER === 'true',
         }),
     ],

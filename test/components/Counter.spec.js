@@ -39,11 +39,11 @@ describe('Counter component', () => {
     it('should match exact snapshot', () => {
         const { actions } = setup();
         const counter = (
-          <div>
-              <Router>
-                  <Counter counter={1} {...actions} />
-                </Router>
-            </div>
+            <div>
+                <Router>
+                    <Counter counter={1} {...actions} />
+              </Router>
+          </div>
         );
         const tree = renderer.create(counter).toJSON();
 

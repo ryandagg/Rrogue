@@ -13,11 +13,11 @@ function setup(initialState) {
     const store = configureStore(initialState);
     const history = createBrowserHistory();
     const provider = (
-      <Provider store={store}>
-          <ConnectedRouter history={history}>
-              <CounterPage />
-            </ConnectedRouter>
-        </Provider>
+        <Provider store={store}>
+            <ConnectedRouter history={history}>
+                <CounterPage />
+          </ConnectedRouter>
+      </Provider>
     );
     const app = mount(provider);
     return {
