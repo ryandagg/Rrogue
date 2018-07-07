@@ -1,4 +1,4 @@
-import {getNullTile} from './tile/TileUtils';
+import {getNullTile, getFloorTile} from './tile/TileUtils';
 
 export default class GameMap {
     constructor(tiles) {
@@ -24,5 +24,22 @@ export default class GameMap {
         }
     };
 
+    dig = (x, y) => {
+        // If the tile is diggable, update it to a floor
+        if (this.getTile(x, y).isDiggable()) {
+            this._tiles[x][y] = getFloorTile();
+        }
+    };
+
+    getRandomFloorPosition = () => {
+        // Randomly generate a tile which is a floor
+        let x, y;
+        do {
+            x = Math.floor(Math.random() * this._width);
+            y = Math.floor(Math.random() * this._width);
+        } while (!this.getTile(x, y).isWalkable());
+
+        return {x, y};
+    };
 };
 

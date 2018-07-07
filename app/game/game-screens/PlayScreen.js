@@ -4,6 +4,8 @@ import {getNullTile, getFloorTile, getWallTile} from 'app/game/objects/tile/Tile
 import GameMap from 'app/game/objects/GameMap';
 import {forEachOfLength} from 'app/utils/ArrayUtils';
 import {getDisplay} from 'app/game/GetInterface';
+import Entity from 'app/game/objects/entities/Entity';
+import playerTemplate from 'app/game/templates/PlayerTemplate';
 
 
 const pickTile = (x,y,v) => {
@@ -20,20 +22,24 @@ const generateMap = (map => (x,y,v) => {
 
 export default class PlayScreen {
     _map = null;
-    _centerX = 0;
-    _centerY = 0;
+    _player = null;
 
     move = (dX, dY) => {
-        // Positive dX means movement right
-        // negative means movement left
-        // 0 means none
-        this._centerX = Math.max(0,
-            Math.min(this._map.getWidth() - 1, this._centerX + dX));
-        // Positive dY means movement down
-        // negative means movement up
-        // 0 means none
-        this._centerY = Math.max(0,
-            Math.min(this._map.getHeight() - 1, this._centerY + dY));
+        // // Positive dX means movement right
+        // // negative means movement left
+        // // 0 means none
+        // this._centerX = Math.max(0,
+        //     Math.min(this._map.getWidth() - 1, this._centerX + dX));
+        // // Positive dY means movement down
+        // // negative means movement up
+        // // 0 means none
+        // this._centerY = Math.max(0,
+        //     Math.min(this._map.getHeight() - 1, this._centerY + dY));
+        const newX = this._player.getX() + dX;
+        const newY = this._player.getY() + dY;
+
+        // Try to move to the new cell
+        if (this._player.tryMove(newX, newY, this._map)) this.render(getDisplay());
     };
 
     enter = () => {
@@ -46,7 +52,7 @@ export default class PlayScreen {
             });
         });
 
-
+        // todo: don't do this?
         ROT.RNG.setSeed(1234);
 
         const mapConfig = MAP_CONFIGS[MAP_GENERATOR_TYPE];
@@ -72,6 +78,12 @@ export default class PlayScreen {
 
         // Create our map from the tiles
         this._map = new GameMap(map);
+
+        // Create our player and set the position
+        this._player = new Entity(playerTemplate);
+        const position = this._map.getRandomFloorPosition();
+        this._player.setX(position.x);
+        this._player.setY(position.y);
     };
 
     exit = function() {
@@ -85,13 +97,13 @@ export default class PlayScreen {
         // Make sure the x-axis doesn't go to the left of the left bound
         // Make sure we still have enough space to fit an entire game screen
         const topLeftX = Math.min(
-            Math.max(0, Math.floor(this._centerX - (screenWidth / 2))),
+            Math.max(0, Math.floor(this._player.getX() - (screenWidth / 2))),
             this._map.getWidth() - screenWidth
         );
         // Make sure the y-axis doesn't above the top bound
         // Make sure we still have enough space to fit an entire game screen
         const topLeftY = Math.min(
-            Math.max(0, Math.floor(this._centerY - (screenHeight / 2))),
+            Math.max(0, Math.floor(this._player.getY() - (screenHeight / 2))),
             this._map.getHeight() - screenHeight
         );
 
@@ -110,6 +122,15 @@ export default class PlayScreen {
                 );
             });
         });
+
+        // Render the player
+        display.draw(
+            this._player.getX() - topLeftX,
+            this._player.getY() - topLeftY,
+            this._player.getChar(),
+            this._player.getForeground(),
+            this._player.getBackground()
+        );
     };
 
     moveN = () => this.move(0, -1);
@@ -147,6 +168,5 @@ export default class PlayScreen {
             }
         }
 
-        if (doRender) this.render(getDisplay());
     };
 };
