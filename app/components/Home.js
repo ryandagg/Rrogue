@@ -1,21 +1,32 @@
 // @flow
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+/* globals document window */
+import React from 'react';
 import styles from './Home.css';
+import {lifecycle, compose} from 'recompose';
+import {initEngine, getCanvasElement} from '../game/GetEngine';
 
-type Props = {};
+const Home = () => {
+    return (
+        <div>
+            <div className={styles.container} data-tid="container" />
+        </div>
+    );
+};
 
-export default class Home extends Component<Props> {
-    props: Props;
+export default compose(
+    lifecycle({
+        componentDidMount() {
+            const gameRoot = document.getElementById('gameRoot');
+            // delete any existing canvas elements. Only need to do this with HMR on (?)
+            while (gameRoot.firstChild) {
+                gameRoot.removeChild(gameRoot.firstChild);
+            }
+            const width = Math.min(Math.floor(window.innerWidth - 250), 1024);
+            const height = Math.min(Math.floor(window.innerHeight - 250), 728);
+            initEngine({width, height});
+            // Add the container to our HTML page
+            gameRoot.appendChild(getCanvasElement());
 
-    render() {
-        return (
-            <div>
-                <div className={styles.container} data-tid="container">
-                    <h2>Home</h2>
-                    <Link to="/counter">to Counter</Link>
-                </div>
-            </div>
-        );
-    }
-}
+        },
+    }),
+)(Home);

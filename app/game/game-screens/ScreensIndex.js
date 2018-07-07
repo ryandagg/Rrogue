@@ -1,0 +1,1 @@
+export startScreen from './StartScreen';
