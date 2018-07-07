@@ -1,3 +1,5 @@
+/* @flow */
+
 /**
  * Base webpack config used across other specific configs
  */
