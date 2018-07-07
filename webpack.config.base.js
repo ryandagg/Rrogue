@@ -68,7 +68,7 @@ export default {
      */
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
-        modules: [path.join(__dirname, 'app'), 'node_modules'],
+        modules: [__dirname, path.join(__dirname, 'app'), 'node_modules'],
     },
 
     plugins: [

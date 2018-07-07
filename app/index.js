@@ -6,6 +6,7 @@ import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
 
+
 const store = configureStore();
 
 render(
