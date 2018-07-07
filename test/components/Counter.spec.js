@@ -42,8 +42,8 @@ describe('Counter component', () => {
             <div>
                 <Router>
                     <Counter counter={1} {...actions} />
-              </Router>
-          </div>
+                </Router>
+            </div>
         );
         const tree = renderer.create(counter).toJSON();
 

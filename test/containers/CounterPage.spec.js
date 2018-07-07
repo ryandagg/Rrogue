@@ -16,8 +16,8 @@ function setup(initialState) {
         <Provider store={store}>
             <ConnectedRouter history={history}>
                 <CounterPage />
-          </ConnectedRouter>
-      </Provider>
+            </ConnectedRouter>
+        </Provider>
     );
     const app = mount(provider);
     return {

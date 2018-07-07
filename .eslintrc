@@ -1,17 +1,15 @@
 {
-  "parser": "babel-eslint",
-  "parserOptions": {
-    "sourceType": "module",
-    "allowImportExportEverywhere": true
-  },
-  "extends": [
-    "airbnb",
-    "prettier"
-  ],
-  "env": {
-    "browser": true,
-    "node": true
-  },
+    "extends": ["plugin:flowtype/recommended"],
+    "parser": "babel-eslint",
+    "plugins": [
+        "react",
+        "flowtype"
+    ],
+    "env": {
+        "node": true,
+        "es6": true,
+        "mocha": true
+    },
   "rules": {
     "brace-style": [2, "1tbs"],
     "comma-dangle": [1, "always-multiline"],
@@ -57,13 +55,6 @@
     "spaced-comment": 0,
     "wrap-iife": 2
   },
-  "plugins": [
-    "flowtype",
-    "import",
-    "promise",
-    "compat",
-    "react"
-  ],
   "settings": {
     "import/resolver": {
       "webpack": {

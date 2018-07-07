@@ -10,7 +10,7 @@ const store = configureStore();
 render(
     <AppContainer>
         <Root store={store} history={history} />
-  </AppContainer>,
+    </AppContainer>,
     document.getElementById('root')
 );
 
@@ -20,7 +20,7 @@ if (module.hot) {
         render(
             <AppContainer>
                 <NextRoot store={store} history={history} />
-          </AppContainer>,
+            </AppContainer>,
             document.getElementById('root')
         );
     });
