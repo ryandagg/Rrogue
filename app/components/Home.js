@@ -3,7 +3,7 @@
 import React from 'react';
 import styles from './Home.css';
 import {lifecycle, compose} from 'recompose';
-import {initEngine, getCanvasElement} from '../game/GetEngine';
+import {initEngine, getCanvasElement} from '../game/GetInterface';
 
 const Home = () => {
     return (

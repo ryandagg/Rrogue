@@ -1,4 +1,4 @@
-import {getDisplay, setScreen, getScene} from './GetEngine';
+import {getDisplay, setScreen, getScene} from './GetInterface';
 
 export const switchScreen = (screen) => {
     // If we had a screen before, notify it that we exited

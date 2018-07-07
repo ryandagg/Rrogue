@@ -1,9 +1,12 @@
-const fontSize = 16;
-const WIDTH = 90;
-const HEIGHT = Math.floor(WIDTH/16*9);
+const fontSize = 18;
+const DISPLAY_WIDTH = 56;
+const DISPLAY_HEIGHT = Math.floor(DISPLAY_WIDTH/16*9);
 const ROOM_MIN = 6;
 const ROOM_MAX = 13;
 const ROOM_ARG = [ROOM_MIN, ROOM_MAX];
+
+const MAP_WIDTH = 100;
+const MAP_HEIGHT = Math.floor(MAP_WIDTH/16*9);
 
 
 const CELLULAR = 'Cellular';
@@ -12,9 +15,14 @@ const UNIFORM = 'Uniform';
 
 export const DISPLAY_OPTIONS = {
     forceSquareRatio: true, // changes dimensions from rectangle characters to equal height/width per tile
-    width: WIDTH,
-    height: HEIGHT,
+    width: DISPLAY_WIDTH,
+    height: DISPLAY_HEIGHT,
     fontSize,
+};
+
+export const MAP_SIZE = {
+    width: MAP_WIDTH,
+    height: MAP_HEIGHT,
 };
 
 export const MAP_GENERATOR_TYPES = {

@@ -1,5 +1,7 @@
 import ROT from 'rot-js';
 import {PLAY_SCREEN} from 'app/game/game-screens/ScreenNameConstants';
+import {switchScreen} from 'app/game/GetInterface';
+
 
 export default class PlayScreen{
     enter = () => {
@@ -13,7 +15,7 @@ export default class PlayScreen{
         display.drawText(1,1, '%c{yellow}Javascript Roguelike');
         display.drawText(1,2, 'Press [Enter] to start!');
     };
-    handleInput = (inputType, inputData, switchScreen) => {
+    handleInput = (inputType, inputData) => {
         // When [Enter] is pressed, go to the play screen
         if (inputType === 'keydown') {
             if (inputData.keyCode === ROT.VK_RETURN) {
