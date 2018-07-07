@@ -21,12 +21,11 @@ export default compose(
             while (gameRoot.firstChild) {
                 gameRoot.removeChild(gameRoot.firstChild);
             }
-            const width = Math.min(Math.floor(window.innerWidth - 250), 1024);
-            const height = Math.min(Math.floor(window.innerHeight - 250), 728);
-            initEngine({width, height});
+            const displayWidth = Math.min(Math.floor(window.innerWidth - 250), 1024);
+            const displayHeight = Math.min(Math.floor(window.innerHeight - 250), 728);
+            initEngine({displayWidth, displayHeight});
             // Add the container to our HTML page
             gameRoot.appendChild(getCanvasElement());
-
         },
     }),
 )(Home);
