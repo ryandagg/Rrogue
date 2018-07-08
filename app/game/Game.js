@@ -3,17 +3,16 @@ import ROT from 'rot-js';
 import {
     DISPLAY_OPTIONS,
     EVENTS_TO_BIND,
+    STARTING_SCREEN
 } from 'app/game/GameConstants';
 import ScreensMap from 'app/game/game-screens/ScreensIndex';
-import {START_SCREEN} from 'app/game/game-screens/ScreenNameConstants';
-
 
 export default class Game {
-    constructor({displayWidth, displayHeight}) {
+    constructor({ displayWidth, displayHeight }) {
         this._display = new ROT.Display(DISPLAY_OPTIONS);
         this._displayWidth = displayWidth;
         this._displayHeight = displayHeight;
-        this.switchScreen(START_SCREEN);
+        this.switchScreen(STARTING_SCREEN);
 
         // Bind keyboard input events
         EVENTS_TO_BIND.forEach(eventType => this._bindEvent(eventType));
@@ -21,13 +20,16 @@ export default class Game {
 
     getScreen = () => this._currentScreen;
 
-    getWindowDimensions = () => ({width: this._displayWidth, height: this._displayHeight});
+    getWindowDimensions = () => ({
+        width: this._displayWidth,
+        height: this._displayHeight
+    });
 
-    setScreen = (scene) => {
+    setScreen = scene => {
         this._currentScreen = scene;
     };
 
-    switchScreen = (screenName) => {
+    switchScreen = screenName => {
         // If we had a screen before, notify it that we exited
         const currentScreen = this.getScreen();
         if (currentScreen != null) {
@@ -35,7 +37,7 @@ export default class Game {
         }
         // Clear the display
         this.getDisplay().clear();
-        const screen = new (ScreensMap[screenName]);
+        const screen = new ScreensMap[screenName]();
         // Update our current screen, notify it we entered
         // and then render it
         if (screen != null) {
@@ -45,8 +47,8 @@ export default class Game {
         }
     };
 
-    _bindEvent = (event) => {
-        window.addEventListener(event, (e) => {
+    _bindEvent = event => {
+        window.addEventListener(event, e => {
             // When an event is received, send it to the
             // screen if there is one
             if (this._currentScreen !== null) {
@@ -59,4 +61,4 @@ export default class Game {
     getDisplay = () => this._display;
 
     getCanvasElement = () => this.getDisplay().getContainer();
-};
+}

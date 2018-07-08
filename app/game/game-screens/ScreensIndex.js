@@ -4,5 +4,5 @@ import * as SCREEN_NAMES from './ScreenNameConstants';
 
 export default {
     [SCREEN_NAMES.PLAY_SCREEN]: PlayScreen,
-    [SCREEN_NAMES.START_SCREEN]: StartScreen,
+    [SCREEN_NAMES.HOME_SCREEN]: StartScreen
 };
