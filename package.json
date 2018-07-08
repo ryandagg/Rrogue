@@ -3,6 +3,7 @@
   "productName": "ElectronReact",
   "version": "0.13.3",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "config": {"prettierArgs": "--ignore-path .eslintignore --single-quote --write --tab-width 4 --trailing-comma all"},
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.dev.dll.js --colors",
@@ -21,7 +22,7 @@
     "package-linux": "npm run build && build --linux",
     "package-win": "npm run build && build --win --x64",
     "postinstall": "node -r babel-register internals/scripts/CheckNativeDep.js && npm run flow-typed && npm run build-dll && electron-builder install-app-deps && node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
-    "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.js'",
+    "postlint-fix": "prettier $npm_package_config_prettierArgs '**/*.js'",
     "precommit": "lint-staged",
     "prestart": "npm run build",
     "start": "cross-env NODE_ENV=production electron ./app/",
@@ -36,7 +37,7 @@
   "lint-staged": {
     "*.js": [
       "cross-env NODE_ENV=development eslint --cache --format=node_modules/eslint-formatter-pretty",
-      "prettier --ignore-path .eslintignore --single-quote --write --tab-width 4 --trailingComma all",
+      "prettier $npm_package_config_prettierArgs",
       "git add"
     ]
   },
