@@ -1,4 +1,4 @@
-import { MOVABLE, ATTACKER } from 'app/game/mixins/MixinConstants';
+import { MOVABLE, BUMP_ATTACKER } from 'app/game/mixins/MixinConstants';
 
 export default {
     name: MOVABLE,
@@ -10,7 +10,7 @@ export default {
         if (target) {
             // If we are an attacker, try to attack
             // the target
-            if (this.hasMixin(ATTACKER)) {
+            if (this.hasMixin(BUMP_ATTACKER)) {
                 this.attack(target);
                 return true;
             } else {

@@ -2,8 +2,9 @@ import { DESTRUCTIBLE } from 'app/game/mixins/MixinConstants';
 
 export default {
     name: DESTRUCTIBLE,
-    init: function() {
-        this._hp = 1;
+    init: function({ maxHp, hp }) {
+        this._hp = hp || maxHp;
+        this._maxHp = maxHp;
     },
     takeDamage: function(attacker, damage) {
         this._hp -= damage;
@@ -12,5 +13,10 @@ export default {
             this.getMap().removeEntity(this);
         }
     },
-    getHp: () => this._hp
+    getHp: function() {
+        return this._hp;
+    },
+    getMaxHp: function() {
+        return this._maxHp;
+    }
 };
