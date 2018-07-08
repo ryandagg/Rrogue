@@ -14,7 +14,7 @@ import {
 } from 'app/game/objects/tile/TileUtils';
 import GameMap from 'app/game/objects/GameMap';
 import { forEachOfLength } from 'app/utils/ArrayUtils';
-import { refreshScreen } from 'app/game/GameInterface';
+import { refreshScreen, getEngine } from 'app/game/GameInterface';
 import Entity from 'app/game/objects/entities/Entity';
 import playerTemplate from 'app/game/templates/PlayerTemplate';
 
@@ -55,7 +55,11 @@ export default class PlayScreen {
 
         // Try to move to the new cell
         const didMove = this._player.tryMove(newX, newY, this.getMap());
-        if (didMove) refreshScreen();
+        if (didMove) {
+            refreshScreen();
+            // Unlock the engine
+            this._map.getEngine().unlock();
+        }
     };
 
     enter = () => {
@@ -103,9 +107,10 @@ export default class PlayScreen {
 
         // Create our player and set the position
         this._player = new Entity(playerTemplate);
-        const position = this._map.getRandomFloorPosition();
-        this._player.setX(position.x);
-        this._player.setY(position.y);
+        this._map.addEntityAtRandomPosition(this._player);
+        this._map.populateMonsters();
+
+        setTimeout(() => this._map.getEngine().start());
     };
 
     exit = function() {
@@ -118,9 +123,12 @@ export default class PlayScreen {
         return DEBUG_DISPLAY
             ? 0 // don't center if debugging
             : Math.min(
-                Math.max(0, Math.floor(this._player[`get${XY}`]() - mapDimension / 2)),
-                this._map.getWidth() - mapDimension
-            );
+                  Math.max(
+                      0,
+                      Math.floor(this._player[`get${XY}`]() - mapDimension / 2)
+                  ),
+                  this._map.getWidth() - mapDimension
+              );
     };
 
     _getDisplayOffsets = () => ({

@@ -48,8 +48,11 @@ export default class Game {
         // and then render it
         if (screen != null) {
             this.setScreen(screen);
-            screen.enter();
-            this.refreshScreen();
+            // this avoids some timing issues with GameInterface init triggering other calls to GameInterface
+            setTimeout(() => {
+                screen.enter();
+                this.refreshScreen();
+            });
         }
     };
 

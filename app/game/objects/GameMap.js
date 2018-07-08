@@ -3,6 +3,7 @@ import ROT from 'rot-js';
 import { forEachOfLength } from 'app/utils/ArrayUtils';
 import Entity from 'app/game/objects/entities/Entity';
 import { fungusTemplate } from 'app/game/templates/MonsterTemplates';
+import { ACTOR } from 'app/game/mixins/MixinConstants';
 
 export default class GameMap {
     constructor(tiles) {
@@ -18,8 +19,6 @@ export default class GameMap {
         // create the engine and scheduler
         this._scheduler = new ROT.Scheduler.Simple();
         this._engine = new ROT.Engine(this._scheduler);
-
-        this.populateMonsters();
     }
 
     getWidth = () => this._width;
@@ -38,9 +37,15 @@ export default class GameMap {
 
     dig = (x, y) => {
         // If the tile is diggable, update it to a floor
-        if (this.getTile(x, y).isDiggable()) {
+        if (this.getTile(x, y).diggable()) {
             this._tiles[x][y] = getFloorTile();
         }
+    };
+
+    isEmptyFloor = (x, y) => {
+        const tile = this.getTile(x, y);
+        // Check if the tile is floor and also has no entity
+        return tile && tile.walkable() && !this.getEntityAt(x, y);
     };
 
     getRandomFloorPosition = () => {
@@ -49,7 +54,7 @@ export default class GameMap {
         do {
             x = Math.floor(Math.random() * this._width);
             y = Math.floor(Math.random() * this._width);
-        } while (!this.getTile(x, y).isWalkable() && !this.getEntityAt(x, y));
+        } while (!this.isEmptyFloor(x, y));
 
         return { x, y };
     };
@@ -80,8 +85,22 @@ export default class GameMap {
         this._entities.push(entity);
         // Check if this entity is an actor, and if so add
         // them to the scheduler
-        if (entity.hasMixin('Actor')) {
+        if (entity.hasMixin(ACTOR)) {
             this._scheduler.add(entity, true);
+        }
+    };
+
+    removeEntity = entity => {
+        // Find the entity in the list of entities if it is present
+        for (let i = 0; i < this._entities.length; i++) {
+            if (this._entities[i] === entity) {
+                this._entities.splice(i, 1);
+                break;
+            }
+        }
+        // If the entity is an actor, remove them from the scheduler
+        if (entity.hasMixin(ACTOR)) {
+            this._scheduler.remove(entity);
         }
     };
 

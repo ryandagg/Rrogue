@@ -1,16 +1,15 @@
-import { refreshScreen } from 'app/game/GameInterface';
-import { ACTOR_GROUP } from 'app/game/mixins/MixinConstants';
+// import { refreshScreen } from 'app/game/GameInterface';
+import { ACTOR } from 'app/game/mixins/MixinConstants';
 
 export default {
     name: 'PlayerActor',
-    groupName: ACTOR_GROUP,
-    act: () => {
+    groupName: ACTOR,
+    act: function() {
         // Re-render the screen
-        refreshScreen();
+        // refreshScreen();
         // Lock the engine and wait asynchronously
         // for the player to press a key.
-        this.getMap()
-            .getEngine()
-            .lock();
+        const engine = this.getMap().getEngine();
+        engine.lock();
     }
 };
