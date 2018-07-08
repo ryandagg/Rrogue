@@ -2,8 +2,8 @@
 /* globals document window */
 import React from 'react';
 import styles from './Home.css';
-import {lifecycle, compose} from 'recompose';
-import {initEngine, getCanvasElement} from '../game/GetInterface';
+import { lifecycle, compose } from 'recompose';
+import { initEngine, getCanvasElement } from '../game/GameInterface';
 
 const Home = () => {
     return (
@@ -21,11 +21,17 @@ export default compose(
             while (gameRoot.firstChild) {
                 gameRoot.removeChild(gameRoot.firstChild);
             }
-            const displayWidth = Math.min(Math.floor(window.innerWidth - 250), 1024);
-            const displayHeight = Math.min(Math.floor(window.innerHeight - 250), 728);
-            initEngine({displayWidth, displayHeight});
+            const displayWidth = Math.min(
+                Math.floor(window.innerWidth - 250),
+                1024
+            );
+            const displayHeight = Math.min(
+                Math.floor(window.innerHeight - 250),
+                728
+            );
+            initEngine({ displayWidth, displayHeight });
             // Add the container to our HTML page
             gameRoot.appendChild(getCanvasElement());
-        },
-    }),
+        }
+    })
 )(Home);

@@ -72,4 +72,7 @@ export default class Entity extends Tile {
     setY = y => {
         this._y = y;
     };
+
+    setMap = map => (this._map = map);
+    getMap = () => this._map;
 }

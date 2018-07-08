@@ -14,7 +14,7 @@ import {
 } from 'app/game/objects/tile/TileUtils';
 import GameMap from 'app/game/objects/GameMap';
 import { forEachOfLength } from 'app/utils/ArrayUtils';
-import { getDisplay } from 'app/game/GetInterface';
+import { refreshScreen } from 'app/game/GameInterface';
 import Entity from 'app/game/objects/entities/Entity';
 import playerTemplate from 'app/game/templates/PlayerTemplate';
 
@@ -46,13 +46,16 @@ export default class PlayScreen {
     _map = null;
     _player = null;
 
-    reRender = () => this.render(getDisplay());
+    getMap = () => this._map;
+    setMap = map => (this._map = map);
+
     move = (dX, dY) => {
         const newX = this._player.getX() + dX;
         const newY = this._player.getY() + dY;
 
         // Try to move to the new cell
-        if (this._player.tryMove(newX, newY, this._map)) this.reRender();
+        const didMove = this._player.tryMove(newX, newY, this.getMap());
+        if (didMove) refreshScreen();
     };
 
     enter = () => {
@@ -156,6 +159,25 @@ export default class PlayScreen {
             this._player.getForeground(),
             this._player.getBackground()
         );
+
+        this.getMap()
+            .getEntities()
+            .forEach(entity => {
+                if (
+                    entity.getX() >= topLeftX &&
+                    entity.getY() >= topLeftY &&
+                    entity.getX() < topLeftX + DISPLAY_OPTIONS.width &&
+                    entity.getY() < topLeftY + DISPLAY_OPTIONS.height
+                ) {
+                    display.draw(
+                        entity.getX() - topLeftX,
+                        entity.getY() - topLeftY,
+                        entity.getChar(),
+                        entity.getForeground(),
+                        entity.getBackground()
+                    );
+                }
+            });
     };
 
     moveN = () => this.move(0, -1);

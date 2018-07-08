@@ -1,19 +1,18 @@
 import ROT from 'rot-js';
-import {PLAY_SCREEN} from 'app/game/game-screens/ScreenNameConstants';
-import {switchScreen} from 'app/game/GetInterface';
+import { PLAY_SCREEN } from 'app/game/game-screens/ScreenNameConstants';
+import { switchScreen } from 'app/game/GameInterface';
 
-
-export default class PlayScreen{
+export default class PlayScreen {
     enter = () => {
         console.log('Entered start screen.');
     };
     exit = () => {
         console.log('Exited start screen.');
     };
-    render = (display) => {
+    render = display => {
         // Render our prompt to the screen
-        display.drawText(1,1, '%c{yellow}Javascript Roguelike');
-        display.drawText(1,2, 'Press [Enter] to start!');
+        display.drawText(1, 1, '%c{yellow}Javascript Roguelike');
+        display.drawText(1, 2, 'Press [Enter] to start!');
     };
     handleInput = (inputType, inputData) => {
         // When [Enter] is pressed, go to the play screen
@@ -23,4 +22,4 @@ export default class PlayScreen{
             }
         }
     };
-};
+}

@@ -1,9 +1,9 @@
 import {
-    PLAY_SCREEN /* HOME_SCREEN*/
+    PLAY_SCREEN /* HOME_SCREEN,*/
 } from 'app/game/game-screens/ScreenNameConstants';
 
 // for debugging
-export const DEBUG_DISPLAY = false;
+export const DEBUG_DISPLAY = true;
 
 const MAP_WIDTH = 60;
 const MAP_HEIGHT = MAP_WIDTH;
