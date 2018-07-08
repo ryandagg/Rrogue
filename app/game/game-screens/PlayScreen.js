@@ -4,7 +4,8 @@ import {
     MAP_GENERATOR_TYPES,
     MAP_CONFIGS,
     MAP_GENERATOR_TYPE,
-    MAP_SIZE
+    MAP_SIZE,
+    DEBUG_DISPLAY
 } from '../GameConstants';
 import {
     getNullTile,
@@ -45,13 +46,13 @@ export default class PlayScreen {
     _map = null;
     _player = null;
 
+    reRender = () => this.render(getDisplay());
     move = (dX, dY) => {
         const newX = this._player.getX() + dX;
         const newY = this._player.getY() + dY;
 
         // Try to move to the new cell
-        if (this._player.tryMove(newX, newY, this._map))
-            this.render(getDisplay());
+        if (this._player.tryMove(newX, newY, this._map)) this.reRender();
     };
 
     enter = () => {
@@ -108,23 +109,27 @@ export default class PlayScreen {
         console.log('Exited start screen.');
     };
 
-    render = display => {
-        const screenWidth = DISPLAY_OPTIONS.width;
-        const screenHeight = DISPLAY_OPTIONS.height;
+    _getDisplayDimensionOffset = (XY, mapDimension) => {
         // Make sure the x-axis doesn't go to the left of the left bound
         // Make sure we still have enough space to fit an entire game screen
-        // const topLeftX = Math.min(
-        //     Math.max(0, Math.floor(this._player.getX() - screenWidth / 2)),
-        //     this._map.getWidth() - screenWidth
-        // );
-        const topLeftX = Math.floor(this._player.getX() - screenWidth / 2);
-        // Make sure the y-axis doesn't above the top bound
-        // Make sure we still have enough space to fit an entire game screen
-        // const topLeftY = Math.min(
-        //     Math.max(0, Math.floor(this._player.getY() - screenHeight / 2)),
-        //     this._map.getHeight() - screenHeight
-        // );
-        const topLeftY = Math.floor(this._player.getY() - screenHeight / 2);
+        return DEBUG_DISPLAY
+            ? 0 // don't center if debugging
+            : Math.min(
+                  Math.max(
+                      0,
+                      Math.floor(this._player[`get${XY}`]() - mapDimension / 2)
+                  ),
+                  this._map.getWidth() - mapDimension
+              );
+    };
+
+    _getDisplayOffsets = () => ({
+        topLeftX: this._getDisplayDimensionOffset('X', DISPLAY_OPTIONS.width),
+        topLeftY: this._getDisplayDimensionOffset('Y', DISPLAY_OPTIONS.height)
+    });
+
+    render = display => {
+        const { topLeftX, topLeftY } = this._getDisplayOffsets();
 
         forEachOfLength(DISPLAY_OPTIONS.width, x => {
             // Add all the tiles
@@ -143,6 +148,7 @@ export default class PlayScreen {
         });
 
         // Render the player
+        // this is kind of gross due to it being side loaded on, will come up with a better system if problems occur
         display.draw(
             this._player.getX() - topLeftX,
             this._player.getY() - topLeftY,

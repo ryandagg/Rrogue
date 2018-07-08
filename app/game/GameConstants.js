@@ -1,17 +1,16 @@
 import {
-    PLAY_SCREEN /*, HOME_SCREEN*/
+    PLAY_SCREEN /* HOME_SCREEN*/
 } from 'app/game/game-screens/ScreenNameConstants';
+
+// for debugging
+export const DEBUG_DISPLAY = false;
 
 const MAP_WIDTH = 60;
 const MAP_HEIGHT = MAP_WIDTH;
 
-// for debugging
-const FONT_SIZE = 12;
-const DISPLAY_WIDTH = MAP_WIDTH;
-
 // for prod
-// const FONT_SIZE = 36;
-// const DISPLAY_WIDTH = 22;
+const FONT_SIZE = DEBUG_DISPLAY ? 12 : 36;
+const DISPLAY_WIDTH = DEBUG_DISPLAY ? MAP_WIDTH : 22;
 const DISPLAY_HEIGHT = DISPLAY_WIDTH;
 const ROOM_MIN = 6;
 const ROOM_MAX = 13;

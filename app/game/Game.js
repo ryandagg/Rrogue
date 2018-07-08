@@ -29,21 +29,27 @@ export default class Game {
         this._currentScreen = scene;
     };
 
+    refreshScreen = () => {
+        const display = this.getDisplay();
+        // Clear the display
+        display.clear();
+        this.getScreen().render(display);
+    };
+
     switchScreen = screenName => {
         // If we had a screen before, notify it that we exited
         const currentScreen = this.getScreen();
         if (currentScreen != null) {
             currentScreen.exit();
         }
-        // Clear the display
-        this.getDisplay().clear();
+
         const screen = new ScreensMap[screenName]();
         // Update our current screen, notify it we entered
         // and then render it
         if (screen != null) {
             this.setScreen(screen);
             screen.enter();
-            screen.render(this.getDisplay());
+            this.refreshScreen();
         }
     };
 
@@ -51,7 +57,7 @@ export default class Game {
         window.addEventListener(event, e => {
             // When an event is received, send it to the
             // screen if there is one
-            if (this._currentScreen !== null) {
+            if (this._currentScreen != null) {
                 // Send the event type and data to the screen
                 this._currentScreen.handleInput(event, e);
             }

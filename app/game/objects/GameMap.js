@@ -1,4 +1,5 @@
-import {getNullTile, getFloorTile} from './tile/TileUtils';
+import { getNullTile, getFloorTile } from './tile/TileUtils';
+import ROT from 'rot-js';
 
 export default class GameMap {
     constructor(tiles) {
@@ -8,6 +9,12 @@ export default class GameMap {
         // the tiles array
         this._width = tiles.length;
         this._height = tiles[0].length;
+
+        // create a list which will hold the entities
+        this._entities = [];
+        // create the engine and scheduler
+        this._scheduler = new ROT.Scheduler.Simple();
+        this._engine = new ROT.Engine(this._scheduler);
     }
 
     getWidth = () => this._width;
@@ -39,7 +46,14 @@ export default class GameMap {
             y = Math.floor(Math.random() * this._width);
         } while (!this.getTile(x, y).isWalkable());
 
-        return {x, y};
+        return { x, y };
     };
-};
 
+    getEngine = () => this._engine;
+    getEntities = () => this._entities;
+
+    getEntityAt = (x, y) =>
+        this._entities.find(
+            entity => entity.getX() === x && entity.getY() === y
+        ) || false;
+}
