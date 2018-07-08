@@ -113,16 +113,18 @@ export default class PlayScreen {
         const screenHeight = DISPLAY_OPTIONS.height;
         // Make sure the x-axis doesn't go to the left of the left bound
         // Make sure we still have enough space to fit an entire game screen
-        const topLeftX = Math.min(
-            Math.max(0, Math.floor(this._player.getX() - screenWidth / 2)),
-            this._map.getWidth() - screenWidth
-        );
+        // const topLeftX = Math.min(
+        //     Math.max(0, Math.floor(this._player.getX() - screenWidth / 2)),
+        //     this._map.getWidth() - screenWidth
+        // );
+        const topLeftX = Math.floor(this._player.getX() - screenWidth / 2);
         // Make sure the y-axis doesn't above the top bound
         // Make sure we still have enough space to fit an entire game screen
-        const topLeftY = Math.min(
-            Math.max(0, Math.floor(this._player.getY() - screenHeight / 2)),
-            this._map.getHeight() - screenHeight
-        );
+        // const topLeftY = Math.min(
+        //     Math.max(0, Math.floor(this._player.getY() - screenHeight / 2)),
+        //     this._map.getHeight() - screenHeight
+        // );
+        const topLeftY = Math.floor(this._player.getY() - screenHeight / 2);
 
         forEachOfLength(DISPLAY_OPTIONS.width, x => {
             // Add all the tiles
