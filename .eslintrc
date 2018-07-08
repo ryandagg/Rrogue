@@ -19,7 +19,7 @@
     "eqeqeq": [2, "allow-null"],
     "generator-star-spacing": [2, "after"],
     "handle-callback-err": 0,
-    "indent": ["error", 4, { "SwitchCase": 1 }],
+//    "indent": ["error", "tab", { "SwitchCase": 1 }],
     "jsx-quotes": [2, "prefer-double"],
     "new-cap": [2, {"capIsNew": false}],
     "no-bitwise": 2,
@@ -51,7 +51,11 @@
     "semi": 1,
     "keyword-spacing": ["error", { "before": true, "after": true }],
     "space-before-blocks": [2, "always"],
-    "space-before-function-paren": [2, "never"],
+    "space-before-function-paren": [2, {
+        "anonymous": "never",
+        "named": "never",
+        "asyncArrow": "always"
+    }],
     "spaced-comment": 0,
     "wrap-iife": 2
   },

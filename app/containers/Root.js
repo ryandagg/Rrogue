@@ -5,18 +5,18 @@ import { ConnectedRouter } from 'react-router-redux';
 import Routes from '../routes';
 
 type Props = {
-    store: {},
-    history: {}
+	store: {},
+	history: {}, // eslint-disable-line
 };
 
 export default class Root extends Component<Props> {
-    render() {
-        return (
-            <Provider store={this.props.store}>
-                <ConnectedRouter history={this.props.history}>
-                    <Routes />
-                </ConnectedRouter>
-            </Provider>
-        );
-    }
+	render() {
+		return (
+			<Provider store={this.props.store}>
+				<ConnectedRouter history={this.props.history}>
+					<Routes />
+				</ConnectedRouter>
+			</Provider>
+		);
+	}
 }
