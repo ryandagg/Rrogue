@@ -167,6 +167,18 @@ export default class PlayScreen {
 			this._player.getBackground(),
 		);
 
+        // Get the messages in the player's queue and render them
+        const messages = this._player.getMessages();
+        let messageY = 0;
+        messages.forEach(message => {
+            // Draw each message, adding the number of lines
+            messageY += display.drawText(
+                0,
+                messageY,
+                '%c{white}%b{black}' + message,
+            );
+        });
+
 		this.getMap()
 			.getEntities()
 			.forEach(entity => {

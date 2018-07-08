@@ -1,6 +1,10 @@
 import { ACTOR } from 'app/game/mixins/MixinConstants';
 import { fungusTemplate } from 'app/game/templates/MonsterTemplates';
 import Entity from 'app/game/objects/entities/Entity';
+import {sendMessageNearby} from 'app/game/GameInterface';
+
+
+const spreadRadius = 3;
 
 export default {
 	name: 'FungusActor',
@@ -18,8 +22,8 @@ export default {
 				// generating an offset between [-1, 0, 1] for both the x and
 				// y directions. To do this, we generate a number from 0-2 and then
 				// subtract 1.
-				const xOffset = Math.floor(Math.random() * 3) - 1;
-				const yOffset = Math.floor(Math.random() * 3) - 1;
+				const xOffset = Math.floor(Math.random() * spreadRadius) - 1;
+				const yOffset = Math.floor(Math.random() * spreadRadius) - 1;
 				// Make sure we aren't trying to spawn on the same tile as us
 				if (xOffset !== 0 || yOffset !== 0) {
 					// Check if we can actually spawn at that location, and if so
@@ -35,6 +39,13 @@ export default {
 						entity.setY(this.getY() + yOffset);
 						this.getMap().addEntity(entity);
 						this._growthsRemaining--;
+                        sendMessageNearby({
+                            map: this.getMap(),
+                            x: entity.getX(),
+                            y: entity.getY(),
+                            message: 'The fungus is spreading!',
+                            radius: spreadRadius * 3,
+                        });
 					}
 				}
 			}

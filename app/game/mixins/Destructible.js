@@ -1,4 +1,5 @@
 import { DESTRUCTIBLE } from 'app/game/mixins/MixinConstants';
+import {sendMessage} from 'app/game/GameInterface';
 
 export default {
 	name: DESTRUCTIBLE,
@@ -10,6 +11,9 @@ export default {
 		this._hp -= damage;
 		// If have 0 or less HP, then remove ourselves from the map
 		if (this._hp <= 0) {
+            sendMessage(attacker, 'You kill the %s!', [this.getName()]);
+            sendMessage(this, 'You die!');
+
 			this.getMap().removeEntity(this);
 		}
 	},

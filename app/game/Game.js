@@ -6,6 +6,9 @@ import {
 	STARTING_SCREEN,
 } from 'app/game/GameConstants';
 import ScreensMap from 'app/game/game-screens/ScreensIndex';
+import {vsprintf} from 'sprintf';
+import {MESSAGE_RECIPIENT} from 'app/game/mixins/MixinConstants';
+
 
 export default class Game {
 	constructor({ displayWidth, displayHeight }) {
@@ -70,4 +73,35 @@ export default class Game {
 	getDisplay = () => this._display;
 
 	getCanvasElement = () => this.getDisplay().getContainer();
-}
+
+    sendMessage = (recipient, message, args) => {
+        // Make sure the recipient can receive the message
+        // before doing any work.
+        if (recipient.hasMixin(MESSAGE_RECIPIENT)) {
+            // If args were passed, then we format the message, else
+            // no formatting is necessary
+            if (args) {
+                message = vsprintf(message, args);
+            }
+            recipient.receiveMessage(message);
+        }
+    };
+
+    sendMessageNearby = ({map, centerX, centerY, message, args, radius}) => {
+        // If args were passed, then we format the message, else
+        // no formatting is necessary
+        if (args) {
+            message = vsprintf(message, args);
+        }
+
+        // Get the nearby entities
+        // Iterate through nearby entities, sending the message if
+        // they can receive it.
+        map.getEntitiesWithinRadius(centerX, centerY, radius)
+            .forEach(entity => {
+                if (entity.hasMixin(MESSAGE_RECIPIENT)) {
+                    entity.receiveMessage(message);
+                }
+            });
+    }
+};

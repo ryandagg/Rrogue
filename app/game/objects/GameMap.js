@@ -116,4 +116,23 @@ export default class GameMap {
 			this.addEntityAtRandomPosition(new Entity(fungusTemplate)),
 		);
 	};
+
+    getEntitiesWithinRadius = function(centerX, centerY, radius) {
+        const results = [];
+        // Determine our bounds
+        const leftX = centerX - radius;
+        const rightX = centerX + radius;
+        const topY = centerY - radius;
+        const bottomY = centerY + radius;
+        // Iterate through our entities, adding any which are within the bounds
+        return this._entities.reduce((result, entity) => {
+            if (entity.getX() >= leftX &&
+                entity.getX() <= rightX &&
+                entity.getY() >= topY &&
+                entity.getY() <= bottomY) {
+                results.push(entity);
+            }
+            return results;
+        });
+    };
 }

@@ -18,3 +18,5 @@ export const switchScreen = wrapMethod('switchScreen');
 
 export const getWindowDimensions = wrapMethod('getWindowDimensions');
 export const refreshScreen = wrapMethod('refreshScreen');
+export const sendMessage = wrapMethod('sendMessage');
+export const sendMessageNearby = wrapMethod('sendMessageNearby');

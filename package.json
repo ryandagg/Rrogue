@@ -218,7 +218,8 @@
     "redux": "^4.0.0",
     "redux-thunk": "^2.2.0",
     "rot-js": "^0.6.5",
-    "source-map-support": "^0.5.6"
+    "source-map-support": "^0.5.6",
+    "sprintf": "^0.1.5"
   },
   "devEngines": {
     "node": ">=7.x",
