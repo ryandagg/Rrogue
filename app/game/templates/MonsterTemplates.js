@@ -5,6 +5,6 @@ import Destructible from 'app/game/mixins/Destructible';
 export const fungusTemplate = {
 	character: 'M',
 	foreground: 'green',
-	hp: 1,
+	hp: 5,
 	mixins: [monsterMixins.FungusActor, BumpAttacker, Destructible],
 };

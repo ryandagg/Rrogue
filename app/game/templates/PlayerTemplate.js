@@ -7,7 +7,6 @@ export default {
 	character: '@',
 	foreground: 'white',
 	background: 'black',
-	level: 1,
 	maxHp: 20,
 	mixins: [Movable, PlayerActor, BumpAttacker, Destructible],
 };
