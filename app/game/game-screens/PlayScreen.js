@@ -118,12 +118,9 @@ export default class PlayScreen {
         return DEBUG_DISPLAY
             ? 0 // don't center if debugging
             : Math.min(
-                  Math.max(
-                      0,
-                      Math.floor(this._player[`get${XY}`]() - mapDimension / 2)
-                  ),
-                  this._map.getWidth() - mapDimension
-              );
+                Math.max(0, Math.floor(this._player[`get${XY}`]() - mapDimension / 2)),
+                this._map.getWidth() - mapDimension
+            );
     };
 
     _getDisplayOffsets = () => ({
