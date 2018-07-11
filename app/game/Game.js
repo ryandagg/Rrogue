@@ -103,5 +103,20 @@ export default class Game {
                     entity.receiveMessage(message);
                 }
             });
-    }
+    };
+
+	getNeighborPositions = function(x, y, range = 1) {
+		const tiles = [];
+		// Generate all possible offsets
+		for (let dX = -range; dX <= range; dX++) {
+			for (let dY = -range; dY <= range; dY++) {
+				// Make sure it isn't the same tile
+				if (dX === 0 && dY === 0) {
+					continue;
+				}
+				tiles.push({x: x + dX, y: y + dY});
+			}
+		}
+		return tiles.randomize();
+	};
 };

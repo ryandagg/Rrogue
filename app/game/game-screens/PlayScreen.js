@@ -17,6 +17,8 @@ import { forEachOfLength } from 'app/utils/ArrayUtils';
 import { refreshScreen } from 'app/game/GameInterface';
 import Entity from 'app/game/objects/entities/Entity';
 import playerTemplate from 'app/game/templates/PlayerTemplate';
+import {vsprintf} from 'sprintf'
+
 
 const pickTile = (x, y, wall) => {
 	if (wall === 1) {
@@ -178,6 +180,10 @@ export default class PlayScreen {
                 '%c{white}%b{black}' + message,
             );
         });
+
+		// Render player HP
+		const stats = '%c{white}%b{black}' + vsprintf('HP: %d/%d ', [this._player.getHp(), this._player.getMaxHp()]);
+		display.drawText(0, DISPLAY_OPTIONS.height - 1, stats);
 
 		this.getMap()
 			.getEntities()
