@@ -7,7 +7,7 @@ const wrapMethod = methodName => (...args) => game[methodName](...args);
 export const getDisplay = () => game.getDisplay();
 export const getCanvasElement = () => game.getCanvasElement();
 export const initEngine = ({ displayWidth, displayHeight }) => {
-	game = new Game({ displayWidth, displayHeight });
+    game = new Game({ displayWidth, displayHeight });
 };
 
 export const setScreen = wrapMethod('setScreen');

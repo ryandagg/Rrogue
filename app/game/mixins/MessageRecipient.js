@@ -13,5 +13,5 @@ export default {
     },
     clearMessages: function() {
         this._messages = [];
-    }
-}
+    },
+};

@@ -6,9 +6,9 @@ import MessageRecipient from 'app/game/mixins/MessageRecipient';
 
 
 export default {
-	character: '@',
-	foreground: 'white',
-	background: 'black',
-	maxHp: 20,
-	mixins: [Movable, PlayerActor, BumpAttacker, Destructible, MessageRecipient],
+    character: '@',
+    foreground: 'white',
+    background: 'black',
+    maxHp: 20,
+    mixins: [Movable, PlayerActor, BumpAttacker, Destructible, MessageRecipient],
 };
