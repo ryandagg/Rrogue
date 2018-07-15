@@ -2,21 +2,19 @@ import Game from './Game';
 
 let game;
 
-const wrapMethod = methodName => (...args) => game[methodName](...args);
-
 export const getDisplay = () => game.getDisplay();
 export const getCanvasElement = () => game.getCanvasElement();
 export const initEngine = ({ displayWidth, displayHeight }) => {
 	game = new Game({ displayWidth, displayHeight });
 };
 
-export const setScreen = wrapMethod('setScreen');
+export const setScreen = (...args) => game.setScreen(...args);
 
-export const getScene = () => wrapMethod('getScene');
+export const getScreen = (...args) => game.getScreen(...args);
 
-export const switchScreen = wrapMethod('switchScreen');
+export const switchScreen = (...args) => game.switchScreen(...args);
 
-export const getWindowDimensions = wrapMethod('getWindowDimensions');
-export const refreshScreen = wrapMethod('refreshScreen');
-export const sendMessage = wrapMethod('sendMessage');
-export const sendMessageNearby = wrapMethod('sendMessageNearby');
+export const getWindowDimensions = (...args) => game.getWindowDimensions(...args);
+export const refreshScreen = (...args) => game.refreshScreen(...args);
+export const sendMessage = (...args) => game.sendMessage(...args);
+export const sendMessageNearby = (...args) => game.sendMessageNearby(...args);

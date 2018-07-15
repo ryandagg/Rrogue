@@ -11,14 +11,8 @@ export default {
 		// Only remove the entity if they were destructible
 		if (target.hasMixin(DESTRUCTIBLE)) {
 			const damage = this.getAttackValue();
-			sendMessage(this, 'You strike the %s for %d damage!', [
-				target.getName(),
-				damage,
-			]);
-			sendMessage(target, 'The %s strikes you for %d damage!', [
-				this.getName(),
-				damage,
-			]);
+			sendMessage(this, `You strike the ${target.getName()} for ${damage} damage!`);
+			sendMessage(target, `The ${this.getName()} strikes you for ${damage} damage!`);
 
 			target.takeDamage(this, damage);
 		}

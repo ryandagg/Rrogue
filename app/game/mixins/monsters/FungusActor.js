@@ -31,6 +31,7 @@ export default {
 						this.getMap().isEmptyFloor(
 							this.getX() + xOffset,
 							this.getY() + yOffset,
+							this.getZ(),
 						)
 					) {
 						const entity = new Entity(fungusTemplate);
@@ -42,6 +43,7 @@ export default {
 							map: this.getMap(),
 							x: entity.getX(),
 							y: entity.getY(),
+							depth: entity.getZ(),
 							message: 'The fungus is spreading!',
 							radius: spreadRadius * 3,
 						});

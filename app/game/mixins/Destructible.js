@@ -11,7 +11,7 @@ export default {
 		this._hp -= damage;
 		// If have 0 or less HP, then remove ourselves from the map
 		if (this._hp <= 0) {
-			sendMessage(attacker, 'You kill the %s!', [this.getName()]);
+			sendMessage(attacker, `You kill the ${this.getName()}!`);
 			sendMessage(this, 'You die!');
 
 			this.getMap().removeEntity(this);

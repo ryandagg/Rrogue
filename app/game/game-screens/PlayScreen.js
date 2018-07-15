@@ -17,31 +17,9 @@ import { forEachOfLength } from 'app/utils/ArrayUtils';
 import { refreshScreen } from 'app/game/GameInterface';
 import Entity from 'app/game/objects/entities/Entity';
 import playerTemplate from 'app/game/templates/PlayerTemplate';
+import LevelBuilder from 'app/game/objects/LevelBuilder'
 import { vsprintf } from 'sprintf';
 
-const pickTile = (x, y, wall) => {
-	if (wall === 1) {
-		return getFloorTile();
-	}
-
-	return getWallTile();
-};
-
-const makeOuterWallsSolid = generator => (x, y) => {
-	// surround outside of map with walls
-	if (
-		x === 0 ||
-		x === MAP_SIZE.width - 1 ||
-		y === 0 ||
-		y === MAP_SIZE.height - 1
-	) {
-		generator.set(x, y, 0);
-	}
-};
-
-const updateMap = map => (x, y, wall) => {
-	map[x][y] = pickTile(x, y, wall);
-};
 
 export default class PlayScreen {
 	_map = null;
@@ -50,12 +28,13 @@ export default class PlayScreen {
 	getMap = () => this._map;
 	setMap = map => (this._map = map);
 
-	move = (dX, dY) => {
+	move = (dX, dY, dZ = 0) => {
 		const newX = this._player.getX() + dX;
 		const newY = this._player.getY() + dY;
+		const newZ = this._player.getZ() + dZ;
 
 		// Try to move to the new cell
-		const didMove = this._player.tryMove(newX, newY, this.getMap());
+		const didMove = this._player.tryMove(newX, newY, newZ, this.getMap());
 		if (didMove) {
 			refreshScreen();
 			// Unlock the engine
@@ -64,52 +43,15 @@ export default class PlayScreen {
 	};
 
 	enter = () => {
-		let map = [];
-		forEachOfLength(MAP_SIZE.width, x => {
-			map.push([]);
-			// Add all the tiles
-			forEachOfLength(MAP_SIZE.height, () => {
-				map[x].push(getNullTile());
-			});
-		});
-
-		// todo: don't do this?
-		ROT.RNG.setSeed(1234);
-
-		const mapConfig = MAP_CONFIGS[MAP_GENERATOR_TYPE];
-
-		const generator = new ROT.Map[MAP_GENERATOR_TYPE](
-			MAP_SIZE.width,
-			MAP_SIZE.height,
-			mapConfig,
-		);
-
-		if (MAP_GENERATOR_TYPE === MAP_GENERATOR_TYPES.CELLULAR) {
-			// smooth map
-			generator.randomize(mapConfig.fillPercent);
-			for (let i = 0; i < mapConfig.smoothingIterations - 1; i++) {
-				generator.create();
-			}
-			generator.create(makeOuterWallsSolid(generator));
-
-			// make all open spaces reachable
-			generator.connect(updateMap(map), 1);
-		} else {
-			generator.create(updateMap(map));
-
-			// // todo: eh?
-			// generator.getRooms().forEach((room) => {
-			//     room.getDoors(this.drawDoor);
-			// });
-		}
-
-		// Create our map from the tiles
-		this._map = new GameMap(map);
+		const tiles = new LevelBuilder({
+			width: MAP_SIZE.width,
+			height: MAP_SIZE.height,
+			maxDepth: 3,
+		}).getTiles();
 
 		// Create our player and set the position
 		this._player = new Entity(playerTemplate);
-		this._map.addEntityAtRandomPosition(this._player);
-		this._map.populateMonsters();
+		this._map = new GameMap(tiles, this._player);
 
 		setTimeout(() => this._map.getEngine().start());
 	};
@@ -147,13 +89,13 @@ export default class PlayScreen {
 			const offsetX = x + topLeftX;
 			forEachOfLength(DISPLAY_OPTIONS.height, y => {
 				const offsetY = y + topLeftY;
-				const glyph = this._map.getTile(offsetX, offsetY);
+				const tile = this._map.getTile(offsetX, offsetY, this._player.getZ());
 				display.draw(
 					x,
 					y,
-					glyph.getChar(),
-					glyph.getForeground(),
-					glyph.getBackground(),
+					tile.getChar(),
+					tile.getForeground(),
+					tile.getBackground(),
 				);
 			});
 		});
@@ -217,38 +159,55 @@ export default class PlayScreen {
 	moveNE = () => this.move(1, -1);
 	moveSW = () => this.move(-1, 1);
 	moveSE = () => this.move(1, 1);
+	moveDown = () => this.move(0, 0, 1);
+	moveUp = () => this.move(0, 0, -1);
 
 	handleInput = (inputType, inputData) => {
 		if (inputType === 'keydown') {
 			// Movement
-			switch (inputData.keyCode) {
-				// traditional roguelike bindings
-				case ROT.VK_H:
-					this.moveW();
-					break;
-				case ROT.VK_L:
-					this.moveE();
-					break;
-				case ROT.VK_K:
-					this.moveN();
-					break;
-				case ROT.VK_J:
-					this.moveS();
-					break;
-				case ROT.VK_Y:
-					this.moveNW();
-					break;
-				case ROT.VK_U:
-					this.moveNE();
-					break;
-				case ROT.VK_B:
-					this.moveSW();
-					break;
-				case ROT.VK_N:
-					this.moveSE();
-					break;
-				default:
-					break;
+			if (inputData.shiftKey) {
+				switch (inputData.key) {
+					case '>':
+						this.moveDown();
+						break;
+					case '<':
+						this.moveUp();
+						break;
+					default:
+						break;
+				}
+			} else {
+				switch (inputData.keyCode) {
+					// traditional roguelike bindings
+					case ROT.VK_H:
+						this.moveW();
+						break;
+					case ROT.VK_L:
+						this.moveE();
+						break;
+					case ROT.VK_K:
+						this.moveN();
+						break;
+					case ROT.VK_J:
+						this.moveS();
+						break;
+					case ROT.VK_Y:
+						this.moveNW();
+						break;
+					case ROT.VK_U:
+						this.moveNE();
+						break;
+					case ROT.VK_B:
+						this.moveSW();
+						break;
+					case ROT.VK_N:
+						this.moveSE();
+						break;
+
+					default:
+						break;
+				}
+
 			}
 		}
 	};

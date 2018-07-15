@@ -4,69 +4,79 @@ import { forEachOfLength } from 'app/utils/ArrayUtils';
 import Entity from 'app/game/objects/entities/Entity';
 import { fungusTemplate } from 'app/game/templates/MonsterTemplates';
 import { ACTOR } from 'app/game/mixins/MixinConstants';
+import {getRandomPositionForCondition} from 'app/game/objects/GameUtils';
 
 export default class GameMap {
-	constructor(tiles) {
+	constructor(tiles, player) {
 		this._tiles = tiles;
 		// cache the width and height based
 		// on the length of the dimensions of
 		// the tiles array
-		this._width = tiles.length;
-		this._height = tiles[0].length;
+		this._width = tiles[0].length;
+		this._height = tiles[0][0].length;
+		this._depth = tiles.length;
+
+		// add the player
 
 		// create a list which will hold the entities
 		this._entities = [];
 		// create the engine and scheduler
 		this._scheduler = new ROT.Scheduler.Simple();
 		this._engine = new ROT.Engine(this._scheduler);
+
+		this.addEntityAtRandomPosition(player, 0);
+		this.populateMonsters(0);
+
 	}
 
 	getWidth = () => this._width;
 	getHeight = () => this._height;
+	getDepth = () => this._depth;
 
 	// Gets the tile for a given coordinate set
-	getTile = (x, y) => {
+	getTile = (x, y, z) => {
 		// Make sure we are inside the bounds. If we aren't, return
 		// null tile.
-		if (x < 0 || x >= this._width || y < 0 || y >= this._height) {
+		if (x < 0 || x >= this._width || y < 0 || y >= this._height ||
+			z < 0 || z >= this._depth) {
 			return getNullTile();
 		} else {
-			return this._tiles[x][y] || getNullTile();
+			return this._tiles[z][x][y] || getNullTile();
 		}
 	};
 
-	dig = (x, y) => {
+	// no safety check. make sure you want to do this
+	setTile = (x, y, z, tile) => {
+		this._tiles[z][x][y] = tile;
+	};
+
+	dig = (x, y, z) => {
 		// If the tile is diggable, update it to a floor
-		if (this.getTile(x, y).diggable()) {
-			this._tiles[x][y] = getFloorTile();
+		if (this.getTile(x, y, z).diggable()) {
+			this._tiles[z][x][y] = getFloorTile();
 		}
 	};
 
-	isEmptyFloor = (x, y) => {
-		const tile = this.getTile(x, y);
+	isEmptyFloor = (x, y, z) => {
+		const tile = this.getTile(x, y, z);
 		// Check if the tile is floor and also has no entity
-		return tile && tile.walkable() && !this.getEntityAt(x, y);
+		return tile && tile.walkable() && !this.getEntityAt(x, y, z);
 	};
 
-	getRandomFloorPosition = () => {
-		// Randomly generate a tile which is a floor
-		let x, y;
-		do {
-			x = Math.floor(Math.random() * this._width);
-			y = Math.floor(Math.random() * this._width);
-		} while (!this.isEmptyFloor(x, y));
-
-		return { x, y };
-	};
+	getRandomFloorPosition = (z) => getRandomPositionForCondition(
+		this._width,
+		this._height,
+		(x, y) => this.isEmptyFloor(x, y, z),
+	);
 
 	getEngine = () => this._engine;
 
 	/** entities **/
 	getEntities = () => this._entities;
 
-	getEntityAt = (x, y) =>
+	getEntityAt = (x, y, z) =>
 		this._entities.find(
-			entity => entity.getX() === x && entity.getY() === y,
+			entity => entity.getX() === x && entity.getY() === y && entity.getZ() === z,
 		) || false;
 
 	addEntity = entity => {
@@ -75,7 +85,8 @@ export default class GameMap {
 			entity.getX() < 0 ||
 			entity.getX() >= this._width ||
 			entity.getY() < 0 ||
-			entity.getY() >= this._height
+			entity.getY() >= this._height ||
+			entity.getZ() < 0 || entity.getZ() >= this._depth
 		) {
 			throw new Error('Adding entity out of bounds.');
 		}
@@ -104,21 +115,21 @@ export default class GameMap {
 		}
 	};
 
-	addEntityAtRandomPosition = entity => {
-		const { x, y } = this.getRandomFloorPosition();
+	addEntityAtRandomPosition = (entity, z) => {
+		const { x, y } = this.getRandomFloorPosition(z);
 		entity.setX(x);
 		entity.setY(y);
+		entity.setZ(z);
 		this.addEntity(entity);
 	};
 
-	populateMonsters = () => {
+	populateMonsters = (z) => {
 		forEachOfLength(25, () =>
-			this.addEntityAtRandomPosition(new Entity(fungusTemplate)),
+			this.addEntityAtRandomPosition(new Entity(fungusTemplate), z),
 		);
 	};
 
-	getEntitiesWithinRadius = function(centerX, centerY, radius) {
-		const results = [];
+	getEntitiesWithinRadius = ({centerX, centerY, depth, radius}) => {
 		// Determine our bounds
 		const leftX = centerX - radius;
 		const rightX = centerX + radius;
@@ -130,11 +141,12 @@ export default class GameMap {
 				entity.getX() >= leftX &&
 				entity.getX() <= rightX &&
 				entity.getY() >= topY &&
-				entity.getY() <= bottomY
+				entity.getY() <= bottomY &&
+				entity.getZ() === depth
 			) {
-				results.push(entity);
+				result.push(entity);
 			}
-			return results;
-		});
+			return result;
+		}, []);
 	};
 }

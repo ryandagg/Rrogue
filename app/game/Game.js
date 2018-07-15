@@ -6,7 +6,6 @@ import {
 	STARTING_SCREEN,
 } from 'app/game/GameConstants';
 import ScreensMap from 'app/game/game-screens/ScreensIndex';
-import { vsprintf } from 'sprintf';
 import { MESSAGE_RECIPIENT } from 'app/game/mixins/MixinConstants';
 
 export default class Game {
@@ -73,31 +72,20 @@ export default class Game {
 
 	getCanvasElement = () => this.getDisplay().getContainer();
 
-	sendMessage = (recipient, message, args) => {
+	sendMessage = (recipient, message) => {
 		// Make sure the recipient can receive the message
 		// before doing any work.
 		if (recipient.hasMixin(MESSAGE_RECIPIENT)) {
-			// If args were passed, then we format the message, else
-			// no formatting is necessary
-			if (args) {
-				message = vsprintf(message, args);
-			}
 			recipient.receiveMessage(message);
 		}
 	};
 
-	sendMessageNearby = ({ map, centerX, centerY, message, args, radius }) => {
-		// If args were passed, then we format the message, else
-		// no formatting is necessary
-		if (args) {
-			message = vsprintf(message, args);
-		}
-
+	sendMessageNearby = ({ map, centerX, centerY, depth, message, radius }) => {
 		// Get the nearby entities
 		// Iterate through nearby entities, sending the message if
 		// they can receive it.
 		map
-			.getEntitiesWithinRadius(centerX, centerY, radius)
+			.getEntitiesWithinRadius({centerX, centerY, radius, depth})
 			.forEach(entity => {
 				if (entity.hasMixin(MESSAGE_RECIPIENT)) {
 					entity.receiveMessage(message);
@@ -105,7 +93,7 @@ export default class Game {
 			});
 	};
 
-	getNeighborPositions = function(x, y, range = 1) {
+	getNeighborPositions = (x, y, range = 1) => {
 		const tiles = [];
 		// Generate all possible offsets
 		for (let dX = -range; dX <= range; dX++) {

@@ -4,10 +4,11 @@ export default class Entity extends Tile {
 	constructor(properties = {}) {
 		super(properties);
 		// Instantiate any properties from the passed object
-		const { x, y, name, mixins = [] } = properties;
+		const { x, y, z, name, mixins = [] } = properties;
 		this._name = name || '';
 		this._x = x || 0;
 		this._y = y || 0;
+		this._z = z || 0;
 
 		this._map = null;
 
@@ -71,6 +72,17 @@ export default class Entity extends Tile {
 	getY = () => this._y;
 	setY = y => {
 		this._y = y;
+	};
+
+	getZ = () => this._z;
+	setZ = z => {
+		this._z = z;
+	};
+
+	setPosition = (x, y, z) => {
+		this._x = x;
+		this._y = y;
+		this._z = z;
 	};
 
 	setMap = map => (this._map = map);
