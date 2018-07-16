@@ -4,6 +4,7 @@ import {
 
 // for debugging
 export const DEBUG_DISPLAY = false;
+
 const MAP_WIDTH = 60;
 const MAP_HEIGHT = MAP_WIDTH;
 

@@ -74,16 +74,19 @@ export default class PlayScreen {
 
 	render = display => {
 		const { topLeftX, topLeftY } = this._getDisplayOffsets();
+		const playerDepth = this._player.getZ();
+
 
 		const visibleCells = {};
 		// Find all visible cells and update the object
-		this._map.getFov(this._player.getZ()).compute(
+		this._map.getFov(playerDepth).compute(
 			this._player.getX(),
 			this._player.getY(),
 			this._player.getSightRadius(),
 			(x, y) => {
 				if (!visibleCells[x]) visibleCells[x] = {};
 				visibleCells[x][y] = true;
+				this._map.setExplored(x, y, playerDepth, true);
 			});
 
 		forEachOfLength(DISPLAY_OPTIONS.width, x => {
@@ -91,13 +94,18 @@ export default class PlayScreen {
 			const offsetX = x + topLeftX;
 			forEachOfLength(DISPLAY_OPTIONS.height, y => {
 				const offsetY = y + topLeftY;
-				if (DEBUG_DISPLAY || (visibleCells[offsetX] && visibleCells[offsetX][offsetY])) {
-					const tile = this._map.getTile(offsetX, offsetY, this._player.getZ());
+				const visible = visibleCells[offsetX] && visibleCells[offsetX][offsetY];
+
+				if (DEBUG_DISPLAY || visible || this._map.isExplored(offsetX, offsetY, playerDepth)) {
+					const tile = this._map.getTile(offsetX, offsetY, playerDepth);
+
+					// The foreground color becomes dark gray if the tile has been
+					// explored but is not visible
 					display.draw(
 						x,
 						y,
 						tile.getChar(),
-						tile.getForeground(),
+						visible ? tile.getForeground() : 'darkGray',
 						tile.getBackground(),
 					);
 				}
@@ -133,14 +141,18 @@ export default class PlayScreen {
 		this.getMap()
 			.getEntities()
 			.forEach(entity => {
+				const entX =  entity.getX();
+				const entY =  entity.getY();
 				if (
-					entity.getZ() === this._player.getZ() &&
-					visibleCells[entity.getX()] &&
-					visibleCells[entity.getX()][entity.getY()]
+					DEBUG_DISPLAY || (
+						entity.getZ() === playerDepth &&
+						visibleCells[entX] &&
+						visibleCells[entX][entY]
+					)
 				) {
 					display.draw(
-						entity.getX() - topLeftX,
-						entity.getY() - topLeftY,
+						entX - topLeftX,
+						entY - topLeftY,
 						entity.getChar(),
 						entity.getForeground(),
 						entity.getBackground(),

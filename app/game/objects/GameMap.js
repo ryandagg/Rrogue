@@ -16,6 +16,8 @@ export default class GameMap {
 		this._height = tiles[0][0].length;
 		this._depth = tiles.length;
 
+		// Setup the explored array
+		this._explored = new Array(this._depth);
 		this._fov = [];
 		// create a list which will hold the entities
 		this._entities = [];
@@ -27,7 +29,8 @@ export default class GameMap {
 		this.addEntityAtRandomPosition(player, 0);
 		this.populateMonsters(0);
 		// setup the field of visions
-		this.setupFov();
+		this._setupFov();
+		this._setupExploredArray();
 	}
 
 	getWidth = () => this._width;
@@ -152,7 +155,7 @@ export default class GameMap {
 	};
 
 	/** lighting **/
-	setupFov = () => {
+	_setupFov = () => {
 		// Iterate through each depth level, setting up the field of vision
 		forEachOfLength(this._depth, z => {
 				// For each depth, we need to create a callback which figures out
@@ -160,11 +163,30 @@ export default class GameMap {
 			this._fov.push(
 				new ROT.FOV.DiscreteShadowcasting(
 					(x, y) => !this.getTile(x, y, z).blockingLight(),
-					{topology: 4},
+					{topology: 8},
 				),
 			);
 		});
 	};
 
 	getFov = (depth) => this._fov[depth];
+
+	_setupExploredArray = () => {
+		forEachOfLength(this._depth, (z) => {
+			this._explored[z] = new Array(this._width);
+			forEachOfLength(this._width, (x) => {
+				this._explored[z][x] = new Array(this._height);
+				forEachOfLength(this._height, (y) => this._explored[z][x][y] = false);
+			});
+		});
+	};
+
+	setExplored = (x, y, z, isExplored) => {
+		// Only update if the tile is within bounds
+		if (this.getTile(x, y, z).getChar()) {
+			this._explored[z][x][y] = isExplored;
+		}
+	};
+
+	isExplored = (x, y, z) => this._explored[z][x][y] || false;
 }
