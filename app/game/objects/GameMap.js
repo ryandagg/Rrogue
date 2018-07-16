@@ -1,10 +1,10 @@
 import { getNullTile, getFloorTile } from './tile/TileUtils';
 import ROT from 'rot-js';
-import { forEachOfLength } from 'app/utils/ArrayUtils';
+import { forEachOfLength, getArrayOfLength } from 'app/utils/ArrayUtils';
 import Entity from 'app/game/objects/entities/Entity';
 import { fungusTemplate } from 'app/game/templates/MonsterTemplates';
 import { ACTOR } from 'app/game/mixins/MixinConstants';
-import {getRandomPositionForCondition} from 'app/game/objects/GameUtils';
+import {getRandomPositionForCondition, getEntityKey} from 'app/game/objects/GameUtils';
 
 export default class GameMap {
 	constructor(tiles, player) {
@@ -20,7 +20,7 @@ export default class GameMap {
 		this._explored = new Array(this._depth);
 		this._fov = [];
 		// create a list which will hold the entities
-		this._entities = [];
+		this._entities = getArrayOfLength(this._depth).map(() => ({}));
 		// create the engine and scheduler
 		this._scheduler = new ROT.Scheduler.Simple();
 		this._engine = new ROT.Engine(this._scheduler);
@@ -76,28 +76,26 @@ export default class GameMap {
 	getEngine = () => this._engine;
 
 	/** entities **/
-	getEntities = () => this._entities;
+	getEntitiesOnDepth = (depth) => this._entities[depth];
 
-	getEntityAt = (x, y, z) =>
-		this._entities.find(
-			entity => entity.getX() === x && entity.getY() === y && entity.getZ() === z,
-		) || false;
+
+	getEntityAt = (x, y, z) => {
+		return this._entities[z][getEntityKey(x, y)] || false;
+	};
+
+	setEntityAt = (entity) => {
+		this._entities[entity.getZ()][entity.getKey()] = entity;
+	};
+
+	deleteEntityAt = (x, y, z) => {
+		delete this._entities[z][getEntityKey(x, y)];
+	};
 
 	addEntity = entity => {
-		// Make sure the entity's position is within bounds
-		if (
-			entity.getX() < 0 ||
-			entity.getX() >= this._width ||
-			entity.getY() < 0 ||
-			entity.getY() >= this._height ||
-			entity.getZ() < 0 || entity.getZ() >= this._depth
-		) {
-			throw new Error('Adding entity out of bounds.');
-		}
 		// Update the entity's map
 		entity.setMap(this);
 		// Add the entity to the list of entities
-		this._entities.push(entity);
+		this.setEntityAt(entity);
 		// Check if this entity is an actor, and if so add
 		// them to the scheduler
 		if (entity.hasMixin(ACTOR)) {
@@ -106,13 +104,7 @@ export default class GameMap {
 	};
 
 	removeEntity = entity => {
-		// Find the entity in the list of entities if it is present
-		for (let i = 0; i < this._entities.length; i++) {
-			if (this._entities[i] === entity) {
-				this._entities.splice(i, 1);
-				break;
-			}
-		}
+		this.deleteEntityAt(entity.getX(), entity.getY(), entity.getZ());
 		// If the entity is an actor, remove them from the scheduler
 		if (entity.hasMixin(ACTOR)) {
 			this._scheduler.remove(entity);
@@ -139,8 +131,10 @@ export default class GameMap {
 		const rightX = centerX + radius;
 		const topY = centerY - radius;
 		const bottomY = centerY + radius;
+		const levelEntities = this._entities[depth];
 		// Iterate through our entities, adding any which are within the bounds
-		return this._entities.reduce((result, entity) => {
+		return Object.keys(levelEntities).reduce((result, key) => {
+			const entity = levelEntities[key];
 			if (
 				entity.getX() >= leftX &&
 				entity.getX() <= rightX &&
@@ -152,6 +146,32 @@ export default class GameMap {
 			}
 			return result;
 		}, []);
+	};
+
+	updateEntityPosition = (entity, oldX, oldY, oldZ) => {
+		// Delete the old key if it is the same entity and we have old positions.
+		// expect the entities internal information to incorrect
+		if (oldX) {
+			if (this.getEntityAt(oldX, oldY, oldZ) === entity) {
+				this.deleteEntityAt(oldX, oldY, oldZ);
+			}
+		}
+		// Make sure the entity's position is within bounds
+		if (
+			entity.getX() < 0 ||
+			entity.getX() >= this._width ||
+			entity.getY() < 0 ||
+			entity.getY() >= this._height ||
+			entity.getZ() < 0 || entity.getZ() >= this._depth
+		) {
+			throw new Error('Adding entity out of bounds.');
+		}
+		// Sanity check to make sure there is no entity at the new position.
+		if (this._entities[entity.getZ()][entity.getKey()]) {
+			throw new Error('Tried to add an entity at an occupied position.');
+		}
+		// Add the entity to the table of entities
+		this.setEntityAt(entity);
 	};
 
 	/** lighting **/

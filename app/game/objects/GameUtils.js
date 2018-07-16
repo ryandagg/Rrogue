@@ -8,3 +8,5 @@ export const getRandomPositionForCondition = (maxWidth, maxHeight, checker) => {
 
 	return { x, y };
 };
+
+export const getEntityKey = (x, y) => `${x},${y}`;

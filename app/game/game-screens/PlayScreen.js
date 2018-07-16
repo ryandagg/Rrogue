@@ -138,14 +138,15 @@ export default class PlayScreen {
 		const stats = '%c{white}%b{black}' + `HP: ${this._player.getHp()}/${this._player.getMaxHp()}`;
 		display.drawText(0, DISPLAY_OPTIONS.height - 1, stats);
 
-		this.getMap()
-			.getEntities()
-			.forEach(entity => {
+		const entitiesOnLevel = this.getMap().getEntitiesOnDepth(playerDepth);
+		Object.keys(entitiesOnLevel)
+			.forEach(key => {
+				const entity = entitiesOnLevel[key];
 				const entX =  entity.getX();
 				const entY =  entity.getY();
+
 				if (
 					DEBUG_DISPLAY || (
-						entity.getZ() === playerDepth &&
 						visibleCells[entX] &&
 						visibleCells[entX][entY]
 					)
