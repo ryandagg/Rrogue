@@ -57,6 +57,10 @@ export default class Game {
 		}
 	};
 
+	setGameOver = () => {
+		this.getScreen().setGameOver(true);
+	};
+
 	_bindEvent = event => {
 		window.addEventListener(event, e => {
 			// When an event is received, send it to the

@@ -6,15 +6,18 @@ import {
 } from '../GameConstants';
 import GameMap from 'app/game/objects/GameMap';
 import { forEachOfLength } from 'app/utils/ArrayUtils';
-import { refreshScreen } from 'app/game/GameInterface';
 import Entity from 'app/game/objects/entities/Entity';
 import playerTemplate from 'app/game/templates/PlayerTemplate';
 import LevelBuilder from 'app/game/objects/LevelBuilder';
+import {switchScreen} from 'app/game/GameInterface';
+import {GAME_OVER_SCREEN} from 'app/game/game-screens/ScreenNameConstants';
 
 
 export default class PlayScreen {
 	_map = null;
 	_player = null;
+	_gameEnded = false;
+
 
 	getMap = () => this._map;
 	setMap = map => (this._map = map);
@@ -27,11 +30,12 @@ export default class PlayScreen {
 		// Try to move to the new cell
 		const didMove = this._player.tryMove(newX, newY, newZ, this.getMap());
 		if (didMove) {
-			refreshScreen();
 			// Unlock the engine
 			this._map.getEngine().unlock();
 		}
 	};
+
+	setGameOver = () => this._gameEnded = true;
 
 	enter = () => {
 		const tiles = new LevelBuilder({
@@ -44,6 +48,7 @@ export default class PlayScreen {
 		this._player = new Entity(playerTemplate);
 		this._map = new GameMap(tiles, this._player);
 
+		// this prevents some issues with dependencies firing upon start up that require this
 		setTimeout(() => this._map.getEngine().start());
 	};
 
@@ -175,6 +180,16 @@ export default class PlayScreen {
 
 	handleInput = (inputType, inputData) => {
 		if (inputType === 'keydown') {
+			// If the game is over, enter will bring the user to the losing screen.
+			if (this._gameEnded) {
+				if (inputData.keyCode === ROT.VK_RETURN) {
+					switchScreen(GAME_OVER_SCREEN);
+					// Return to make sure the user can't still play
+				}
+				return;
+			}
+
+
 			// Movement
 			if (inputData.shiftKey) {
 				switch (inputData.key) {
@@ -214,7 +229,9 @@ export default class PlayScreen {
 					case ROT.VK_N:
 						this.moveSE();
 						break;
-
+					case ROT.VK_PERIOD:
+						this.move(0, 0);
+						break;
 					default:
 						break;
 				}

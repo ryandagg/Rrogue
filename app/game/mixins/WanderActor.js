@@ -7,7 +7,7 @@ export default {
 	groupName: ACTOR,
 	act: function() {
 		// Flip coin to determine if moving by 1 in the positive or negative direction
-		const moveOffset = (Math.round(Math.random()) === 1) ? 1 : -1;
+		const moveOffset = Math.round(Math.random()) === 1 ? 1 : -1;
 		// Flip coin to determine if moving in x direction or y direction
 		if (Math.round(Math.random()) === 1) {
 			this.tryMove(this.getX() + moveOffset, this.getY(), this.getZ(), this.getMap());

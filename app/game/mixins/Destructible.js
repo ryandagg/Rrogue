@@ -1,4 +1,4 @@
-import { DESTRUCTIBLE } from 'app/game/mixins/MixinConstants';
+import { DESTRUCTIBLE, PLAYER_ACTOR } from 'app/game/mixins/MixinConstants';
 import { sendMessage } from 'app/game/GameInterface';
 
 export default {
@@ -11,8 +11,14 @@ export default {
 		this._hp -= damage;
 		// If have 0 or less HP, then remove ourselves from the map
 		if (this._hp <= 0) {
-			sendMessage(attacker, `You kill the ${this.getName()}!`);
-			sendMessage(this, 'You die!');
+			if (this.hasMixin(PLAYER_ACTOR)) {
+				sendMessage(this, 'You die!');
+				// force end game screen without too much nonsense
+				this.act();
+			} else {
+				sendMessage(attacker, `You kill the ${this.getName()}!`);
+				this.getMap().removeEntity(this);
+			}
 
 			this.getMap().removeEntity(this);
 		}

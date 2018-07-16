@@ -24,7 +24,7 @@ export default {
 			} else {
 				sendMessage(this, "You can't go down here!");
 			}
-		} else if (target) {
+		} else if (target && target !== this) { // don't attack yourself
 			// If we are an attacker, try to attack
 			// the target
 			if (this.hasMixin(BUMP_ATTACKER)) {

@@ -18,3 +18,4 @@ export const getWindowDimensions = (...args) => game.getWindowDimensions(...args
 export const refreshScreen = (...args) => game.refreshScreen(...args);
 export const sendMessage = (...args) => game.sendMessage(...args);
 export const sendMessageNearby = (...args) => game.sendMessageNearby(...args);
+export const setGameOver = (...args) => game.setGameOver(...args);
