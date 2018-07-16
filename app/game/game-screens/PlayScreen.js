@@ -1,24 +1,15 @@
 import ROT from 'rot-js';
 import {
 	DISPLAY_OPTIONS,
-	MAP_GENERATOR_TYPES,
-	MAP_CONFIGS,
-	MAP_GENERATOR_TYPE,
 	MAP_SIZE,
 	DEBUG_DISPLAY,
 } from '../GameConstants';
-import {
-	getNullTile,
-	getFloorTile,
-	getWallTile,
-} from 'app/game/objects/tile/TileUtils';
 import GameMap from 'app/game/objects/GameMap';
 import { forEachOfLength } from 'app/utils/ArrayUtils';
 import { refreshScreen } from 'app/game/GameInterface';
 import Entity from 'app/game/objects/entities/Entity';
 import playerTemplate from 'app/game/templates/PlayerTemplate';
-import LevelBuilder from 'app/game/objects/LevelBuilder'
-import { vsprintf } from 'sprintf';
+import LevelBuilder from 'app/game/objects/LevelBuilder';
 
 
 export default class PlayScreen {
@@ -84,19 +75,32 @@ export default class PlayScreen {
 	render = display => {
 		const { topLeftX, topLeftY } = this._getDisplayOffsets();
 
+		const visibleCells = {};
+		// Find all visible cells and update the object
+		this._map.getFov(this._player.getZ()).compute(
+			this._player.getX(),
+			this._player.getY(),
+			this._player.getSightRadius(),
+			(x, y) => {
+				if (!visibleCells[x]) visibleCells[x] = {};
+				visibleCells[x][y] = true;
+			});
+
 		forEachOfLength(DISPLAY_OPTIONS.width, x => {
 			// Add all the tiles
 			const offsetX = x + topLeftX;
 			forEachOfLength(DISPLAY_OPTIONS.height, y => {
 				const offsetY = y + topLeftY;
-				const tile = this._map.getTile(offsetX, offsetY, this._player.getZ());
-				display.draw(
-					x,
-					y,
-					tile.getChar(),
-					tile.getForeground(),
-					tile.getBackground(),
-				);
+				if (DEBUG_DISPLAY || (visibleCells[offsetX] && visibleCells[offsetX][offsetY])) {
+					const tile = this._map.getTile(offsetX, offsetY, this._player.getZ());
+					display.draw(
+						x,
+						y,
+						tile.getChar(),
+						tile.getForeground(),
+						tile.getBackground(),
+					);
+				}
 			});
 		});
 
@@ -123,22 +127,16 @@ export default class PlayScreen {
 		});
 
 		// Render player HP
-		const stats =
-			'%c{white}%b{black}' +
-			vsprintf('HP: %d/%d ', [
-				this._player.getHp(),
-				this._player.getMaxHp(),
-			]);
+		const stats = '%c{white}%b{black}' + `HP: ${this._player.getHp()}/${this._player.getMaxHp()}`;
 		display.drawText(0, DISPLAY_OPTIONS.height - 1, stats);
 
 		this.getMap()
 			.getEntities()
 			.forEach(entity => {
 				if (
-					entity.getX() >= topLeftX &&
-					entity.getY() >= topLeftY &&
-					entity.getX() < topLeftX + DISPLAY_OPTIONS.width &&
-					entity.getY() < topLeftY + DISPLAY_OPTIONS.height
+					entity.getZ() === this._player.getZ() &&
+					visibleCells[entity.getX()] &&
+					visibleCells[entity.getX()][entity.getY()]
 				) {
 					display.draw(
 						entity.getX() - topLeftX,
@@ -207,7 +205,6 @@ export default class PlayScreen {
 					default:
 						break;
 				}
-
 			}
 		}
 	};

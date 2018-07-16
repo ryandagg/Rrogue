@@ -8,6 +8,7 @@ export default class Tile {
 			walkable,
 			upStairs,
 			downStairs,
+			blockingLight,
 		} = args;
 
 		// Instantiate properties to default if they weren't passed
@@ -18,6 +19,7 @@ export default class Tile {
 		this._walkable = walkable || false;
 		this._upStairs = upStairs || false;
 		this._downStairs = downStairs || false;
+		this._blockingLight = blockingLight || false;
 	}
 	getChar = () => this._char;
 	getBackground = () => this._background;
@@ -26,4 +28,5 @@ export default class Tile {
 	walkable = () => this._walkable;
 	downStairs = () => this._downStairs;
 	upStairs = () => this._upStairs;
+	blockingLight = () => this._blockingLight;
 }

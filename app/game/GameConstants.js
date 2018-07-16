@@ -3,8 +3,7 @@ import {
 } from 'app/game/game-screens/ScreenNameConstants';
 
 // for debugging
-export const DEBUG_DISPLAY = true;
-
+export const DEBUG_DISPLAY = false;
 const MAP_WIDTH = 60;
 const MAP_HEIGHT = MAP_WIDTH;
 

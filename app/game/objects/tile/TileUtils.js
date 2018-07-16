@@ -11,6 +11,7 @@ export const getWallTile = () => new Tile({
 	character: '#',
 	foreground: 'goldenrod',
 	isDiggable: true,
+	blockingLight: true,
 });
 
 export const getStairsUpTile = () => new Tile({
