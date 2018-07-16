@@ -39,8 +39,7 @@ export default {
 			// Check if we can walk on the tile
 			// and if so simply walk onto it
 			// Update the entity's position
-			this._x = x;
-			this._y = y;
+			this.setPosition(x, y, z);
 			return true;
 		} /*else if (tile.diggable()) {
             // Check if the tile is diggable, and

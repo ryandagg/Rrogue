@@ -2,9 +2,11 @@ import { getNullTile, getFloorTile } from './tile/TileUtils';
 import ROT from 'rot-js';
 import { forEachOfLength, getArrayOfLength } from 'app/utils/ArrayUtils';
 import Entity from 'app/game/objects/entities/Entity';
-import { fungusTemplate } from 'app/game/templates/MonsterTemplates';
+import { fungusTemplate, batTemplate, newtTemplate } from 'app/game/templates/MonsterTemplates';
 import { ACTOR } from 'app/game/mixins/MixinConstants';
 import {getRandomPositionForCondition, getEntityKey} from 'app/game/objects/GameUtils';
+
+const templates = [fungusTemplate, batTemplate,newtTemplate];
 
 export default class GameMap {
 	constructor(tiles, player) {
@@ -95,7 +97,7 @@ export default class GameMap {
 		// Update the entity's map
 		entity.setMap(this);
 		// Add the entity to the list of entities
-		this.setEntityAt(entity);
+		this.updateEntityPosition(entity);
 		// Check if this entity is an actor, and if so add
 		// them to the scheduler
 		if (entity.hasMixin(ACTOR)) {
@@ -120,9 +122,12 @@ export default class GameMap {
 	};
 
 	populateMonsters = (z) => {
-		forEachOfLength(25, () =>
-			this.addEntityAtRandomPosition(new Entity(fungusTemplate), z),
-		);
+		forEachOfLength(25, () => {
+			// Randomly select a template
+			const template = templates[Math.floor(Math.random() * templates.length)];
+			// Add random enemies to each floor.
+			this.addEntityAtRandomPosition(new Entity(template), z);
+		});
 	};
 
 	getEntitiesWithinRadius = ({centerX, centerY, depth, radius}) => {

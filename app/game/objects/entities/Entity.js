@@ -81,9 +81,19 @@ export default class Entity extends Tile {
 	};
 
 	setPosition = (x, y, z) => {
+		const oldX = this._x;
+		const oldY = this._y;
+		const oldZ = this._z;
+
+		// Update position
 		this._x = x;
 		this._y = y;
 		this._z = z;
+
+		if (this._map) {
+			this._map.updateEntityPosition(this, oldX, oldY, oldZ);
+		}
+
 	};
 
 	setMap = map => (this._map = map);
