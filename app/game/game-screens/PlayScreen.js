@@ -31,7 +31,7 @@ export default class PlayScreen {
 		const didMove = this._player.tryMove(newX, newY, newZ, this.getMap());
 		if (didMove) {
 			// Unlock the engine
-			this._map.getEngine().unlock();
+			this._map.getEngine(this._player.getZ()).unlock();
 		}
 	};
 
@@ -49,7 +49,7 @@ export default class PlayScreen {
 		this._map = new GameMap(tiles, this._player);
 
 		// this prevents some issues with dependencies firing upon start up that require this
-		setTimeout(() => this._map.getEngine().start());
+		setTimeout(() => this._map.getEngine(this._player.getZ()).start());
 	};
 
 	exit = function() {

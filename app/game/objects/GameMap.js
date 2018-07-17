@@ -18,18 +18,22 @@ export default class GameMap {
 		this._height = tiles[0][0].length;
 		this._depth = tiles.length;
 
+		const arrayOfDepth = getArrayOfLength(this._depth);
 		// Setup the explored array
 		this._explored = new Array(this._depth);
 		this._fov = [];
 		// create a list which will hold the entities
-		this._entities = getArrayOfLength(this._depth).map(() => ({}));
+		this._entities = arrayOfDepth.map(() => ({}));
+		// create a list which will hold the items
+		this._items = arrayOfDepth.map(() => ({}));
 		// create the engine and scheduler
-		this._scheduler = new ROT.Scheduler.Simple();
-		this._engine = new ROT.Engine(this._scheduler);
+		// todo: create 1 engine and scheduler per level?
+		this._schedulers = arrayOfDepth.map(() => new ROT.Scheduler.Simple());
+		this._engines = this._schedulers.map((scheduler) => new ROT.Engine(scheduler));
 
 		// add the player
 		this.addEntityAtRandomPosition(player, 0);
-		this.populateMonsters(0);
+		forEachOfLength(this._depth, (z) => this.populateMonsters(z));
 		// setup the field of visions
 		this._setupFov();
 		this._setupExploredArray();
@@ -75,7 +79,7 @@ export default class GameMap {
 		(x, y) => this.isEmptyFloor(x, y, z),
 	);
 
-	getEngine = () => this._engine;
+	getEngine = (z) => this._engines[z];
 
 	/** entities **/
 	getEntitiesOnDepth = (depth) => this._entities[depth];
@@ -93,7 +97,7 @@ export default class GameMap {
 		delete this._entities[z][getEntityKey(x, y)];
 	};
 
-	addEntity = entity => {
+	addEntity = (entity, zOverride) => {
 		// Update the entity's map
 		entity.setMap(this);
 		// Add the entity to the list of entities
@@ -101,15 +105,17 @@ export default class GameMap {
 		// Check if this entity is an actor, and if so add
 		// them to the scheduler
 		if (entity.hasMixin(ACTOR)) {
-			this._scheduler.add(entity, true);
+			const depth = zOverride != null ? zOverride : entity.getZ();
+			this._schedulers[depth].add(entity, true);
 		}
 	};
 
-	removeEntity = entity => {
+	removeEntity = (entity, zOverride) => {
 		this.deleteEntityAt(entity.getX(), entity.getY(), entity.getZ());
 		// If the entity is an actor, remove them from the scheduler
 		if (entity.hasMixin(ACTOR)) {
-			this._scheduler.remove(entity);
+			const depth = zOverride != null ? zOverride : entity.getZ();
+			this._schedulers[depth].remove(entity);
 		}
 	};
 
@@ -156,10 +162,8 @@ export default class GameMap {
 	updateEntityPosition = (entity, oldX, oldY, oldZ) => {
 		// Delete the old key if it is the same entity and we have old positions.
 		// expect the entities internal information to incorrect
-		if (oldX) {
-			if (this.getEntityAt(oldX, oldY, oldZ) === entity) {
-				this.deleteEntityAt(oldX, oldY, oldZ);
-			}
+		if (oldX && this.getEntityAt(oldX, oldY, oldZ) === entity) {
+			this.deleteEntityAt(oldX, oldY, oldZ);
 		}
 		// Make sure the entity's position is within bounds
 		if (
@@ -177,6 +181,12 @@ export default class GameMap {
 		}
 		// Add the entity to the table of entities
 		this.setEntityAt(entity);
+	};
+
+	changeFloorOfEntity = (player, oldZ, newZ) => {
+		// todo: put them on the correct x,z
+		this.removeEntity(player, oldZ);
+		this.addEntity(player, newZ);
 	};
 
 	/** lighting **/
@@ -214,4 +224,5 @@ export default class GameMap {
 	};
 
 	isExplored = (x, y, z) => this._explored[z][x][y] || false;
+
 }
