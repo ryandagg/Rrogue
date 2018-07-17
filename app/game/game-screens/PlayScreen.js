@@ -79,19 +79,19 @@ export default class PlayScreen {
 
 	render = display => {
 		const { topLeftX, topLeftY } = this._getDisplayOffsets();
-		const playerDepth = this._player.getZ();
+		const currentDepth = this._player.getZ();
 
 
 		const visibleCells = {};
 		// Find all visible cells and update the object
-		this._map.getFov(playerDepth).compute(
+		this._map.getFov(currentDepth).compute(
 			this._player.getX(),
 			this._player.getY(),
 			this._player.getSightRadius(),
 			(x, y) => {
 				if (!visibleCells[x]) visibleCells[x] = {};
 				visibleCells[x][y] = true;
-				this._map.setExplored(x, y, playerDepth, true);
+				this._map.setExplored(x, y, currentDepth, true);
 			});
 
 		forEachOfLength(DISPLAY_OPTIONS.width, x => {
@@ -101,31 +101,34 @@ export default class PlayScreen {
 				const offsetY = y + topLeftY;
 				const visible = visibleCells[offsetX] && visibleCells[offsetX][offsetY];
 
-				if (DEBUG_DISPLAY || visible || this._map.isExplored(offsetX, offsetY, playerDepth)) {
-					const tile = this._map.getTile(offsetX, offsetY, playerDepth);
+				if (DEBUG_DISPLAY || visible || this._map.isExplored(offsetX, offsetY, currentDepth)) {
+					// Check if we have an entity at the position
+					let glyph = this._map.getEntityAt(x, y, currentDepth);
+
+					// Check for items
+					if (!glyph) {
+						const items = this._map.getItemsAt(x, y, currentDepth);
+						if (items && items.length) {
+							// If we have items, we want to render the top most item
+							glyph = items[items.length - 1];
+						}
+					}
+
+					// if nothing here, use the empty tile
+					if (!glyph) glyph = this._map.getTile(offsetX, offsetY, currentDepth)
 
 					// The foreground color becomes dark gray if the tile has been
 					// explored but is not visible
 					display.draw(
 						x,
 						y,
-						tile.getChar(),
-						visible ? tile.getForeground() : 'darkGray',
-						tile.getBackground(),
+						glyph.getChar(),
+						visible ? glyph.getForeground() : 'darkGray',
+						glyph.getBackground(),
 					);
 				}
 			});
 		});
-
-		// Render the player
-		// this is kind of gross due to it being side loaded on, will come up with a better system if problems occur
-		display.draw(
-			this._player.getX() - topLeftX,
-			this._player.getY() - topLeftY,
-			this._player.getChar(),
-			this._player.getForeground(),
-			this._player.getBackground(),
-		);
 
 		// Get the messages in the player's queue and render them
 		const messages = this._player.getMessages();
@@ -142,29 +145,6 @@ export default class PlayScreen {
 		// Render player HP
 		const stats = '%c{white}%b{black}' + `HP: ${this._player.getHp()}/${this._player.getMaxHp()}`;
 		display.drawText(0, DISPLAY_OPTIONS.height - 1, stats);
-
-		const entitiesOnLevel = this.getMap().getEntitiesOnDepth(playerDepth);
-		Object.keys(entitiesOnLevel)
-			.forEach(key => {
-				const entity = entitiesOnLevel[key];
-				const entX =  entity.getX();
-				const entY =  entity.getY();
-
-				if (
-					DEBUG_DISPLAY || (
-						visibleCells[entX] &&
-						visibleCells[entX][entY]
-					)
-				) {
-					display.draw(
-						entX - topLeftX,
-						entY - topLeftY,
-						entity.getChar(),
-						entity.getForeground(),
-						entity.getBackground(),
-					);
-				}
-			});
 	};
 
 	moveN = () => this.move(0, -1);

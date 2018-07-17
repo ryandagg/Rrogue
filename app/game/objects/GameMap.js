@@ -4,7 +4,7 @@ import { forEachOfLength, getArrayOfLength } from 'app/utils/ArrayUtils';
 import Entity from 'app/game/objects/entities/Entity';
 import { fungusTemplate, batTemplate, newtTemplate } from 'app/game/templates/MonsterTemplates';
 import { ACTOR } from 'app/game/mixins/MixinConstants';
-import {getRandomPositionForCondition, getEntityKey} from 'app/game/objects/GameUtils';
+import {getRandomPositionForCondition, getCompoundKey} from 'app/game/objects/GameUtils';
 
 const templates = [fungusTemplate, batTemplate,newtTemplate];
 
@@ -86,7 +86,7 @@ export default class GameMap {
 
 
 	getEntityAt = (x, y, z) => {
-		return this._entities[z][getEntityKey(x, y)] || false;
+		return this._entities[z][getCompoundKey(x, y)] || false;
 	};
 
 	setEntityAt = (entity) => {
@@ -94,7 +94,7 @@ export default class GameMap {
 	};
 
 	deleteEntityAt = (x, y, z) => {
-		delete this._entities[z][getEntityKey(x, y)];
+		delete this._entities[z][getCompoundKey(x, y)];
 	};
 
 	addEntity = (entity, zOverride) => {
@@ -225,4 +225,36 @@ export default class GameMap {
 
 	isExplored = (x, y, z) => this._explored[z][x][y] || false;
 
+	/** items **/
+	getItemsAt = (x, y, z) => this._items[z][getCompoundKey(x, y)];
+
+	setItemsAt = (x, y, z, items) => {
+		// If our items array is empty, then delete the key from the table.
+		const key = getCompoundKey(x, y);
+		const floorsItems = this._items[z];
+		if (!items || (items.length === 0 && floorsItems[key])) {
+			delete floorsItems[key];
+		} else {
+			// Simply update the items at that key
+			floorsItems[key] = items;
+		}
+	};
+
+	addItem = (x, y, z, item) => {
+
+		const key = getCompoundKey(x, y);
+		const items = this._items[z][key];
+		// If we already have items at that position, simply append the item to the
+		// list of items.
+		if (items) {
+			items.push(item);
+		} else {
+			items[key] = [item];
+		}
+	};
+
+	addItemAtRandomPosition = (item, z) => {
+		const {x, y} = this.getRandomFloorPosition(z);
+		this.addItem(x, y, z, item);
+	};
 }

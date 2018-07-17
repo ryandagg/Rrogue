@@ -1,4 +1,4 @@
-import { getEntityKey } from 'app/game/objects/GameUtils';
+import { getCompoundKey } from 'app/game/objects/GameUtils';
 import Tile from 'app/game/objects/tile/Tile';
 
 export default class Entity extends Tile {
@@ -99,5 +99,5 @@ export default class Entity extends Tile {
 	setMap = map => (this._map = map);
 	getMap = () => this._map;
 
-	getKey = () => getEntityKey(this.getX(), this.getY())
+	getKey = () => getCompoundKey(this.getX(), this.getY())
 }

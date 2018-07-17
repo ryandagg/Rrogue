@@ -9,4 +9,4 @@ export const getRandomPositionForCondition = (maxWidth, maxHeight, checker) => {
 	return { x, y };
 };
 
-export const getEntityKey = (x, y) => `${x},${y}`;
+export const getCompoundKey = (x, y) => `${x},${y}`;
