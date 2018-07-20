@@ -11,7 +11,6 @@ export default {
 		// If our z level changed, check if we are on stair
 		if (z < currentZ) {
 			if (tile.upStairs()) {
-				this.setPosition(x, y, z);
 				sendMessage(this, `You ascend to level ${z + 1}!`);
 				map.changeFloorOfEntity(this, currentZ, z);
 				return true;
@@ -20,7 +19,6 @@ export default {
 			}
 		} else if (z > currentZ) {
 			if (tile.downStairs()) {
-				this.setPosition(x, y, z);
 				sendMessage(this, `You descend to level ${z + 1}!`);
 				map.changeFloorOfEntity(this, currentZ, z);
 				return true;

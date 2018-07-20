@@ -70,7 +70,7 @@ export default class GameMap {
 	isEmptyFloor = (x, y, z) => {
 		const tile = this.getTile(x, y, z);
 		// Check if the tile is floor and also has no entity
-		return tile && tile.walkable() && !this.getEntityAt(x, y, z);
+		return tile && tile.walkable() && !this.getEntityAt(x, y, z) && !tile.upStairs() && !tile.downStairs();
 	};
 
 	getRandomFloorPosition = (z) => getRandomPositionForCondition(
@@ -176,17 +176,35 @@ export default class GameMap {
 			throw new Error('Adding entity out of bounds.');
 		}
 		// Sanity check to make sure there is no entity at the new position.
-		if (this._entities[entity.getZ()][entity.getKey()]) {
+		const currentEntity = this._entities[entity.getZ()][entity.getKey()];
+		if (currentEntity && currentEntity !== entity) {
 			throw new Error('Tried to add an entity at an occupied position.');
 		}
 		// Add the entity to the table of entities
 		this.setEntityAt(entity);
 	};
 
-	changeFloorOfEntity = (player, oldZ, newZ) => {
-		// todo: put them on the correct x,z
-		this.removeEntity(player, oldZ);
-		this.addEntity(player, newZ);
+	getConnectedStairsPosition = (z, isGoingUp) => {
+		const floorOffset = isGoingUp ? -1 : 1;
+		const floor = this._tiles[z + floorOffset];
+		let position = {};
+		// using find because to lazy to write for loops and break doesn't work in forEach
+		floor.find((column, x) => {
+			return !!column.find((tile, y) => {
+				const isStair = isGoingUp ? tile.downStairs() : tile.upStairs();
+				if (isStair) position = {x, y};
+				return isStair;
+			});
+		});
+
+		return position;
+	};
+
+	changeFloorOfEntity = (entity, oldZ, newZ) => {
+		this.removeEntity(entity, oldZ);
+		const {x, y} = this.getConnectedStairsPosition(entity.getZ(), oldZ > newZ);
+		entity.setPosition(x, y, newZ);
+		this.addEntity(entity);
 	};
 
 	/** lighting **/
