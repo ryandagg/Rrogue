@@ -1,5 +1,5 @@
 import { ACTOR } from 'app/game/mixins/MixinConstants';
-import { fungusTemplate } from 'app/game/templates/MonsterTemplates';
+import { fungusTemplate } from 'app/game/templates/actors/MonsterTemplates';
 import Entity from 'app/game/objects/entities/Entity';
 import { sendMessageNearby } from 'app/game/GameInterface';
 

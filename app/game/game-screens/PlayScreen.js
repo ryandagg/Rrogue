@@ -7,7 +7,7 @@ import {
 import GameMap from 'app/game/objects/GameMap';
 import { forEachOfLength } from 'app/utils/ArrayUtils';
 import Entity from 'app/game/objects/entities/Entity';
-import playerTemplate from 'app/game/templates/PlayerTemplate';
+import playerTemplate from 'app/game/templates/actors/PlayerTemplate';
 import LevelBuilder from 'app/game/objects/LevelBuilder';
 import {switchScreen} from 'app/game/GameInterface';
 import {GAME_OVER_SCREEN} from 'app/game/game-screens/ScreenNameConstants';

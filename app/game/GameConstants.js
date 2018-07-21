@@ -71,3 +71,5 @@ export const MAP_CONFIGS = {
 };
 
 export const EVENTS_TO_BIND = ['keydown', 'keyup', 'keypress'];
+
+export const ITEM_MAX = 4;

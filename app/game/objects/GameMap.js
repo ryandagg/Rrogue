@@ -2,9 +2,12 @@ import { getNullTile, getFloorTile } from './tile/TileUtils';
 import ROT from 'rot-js';
 import { forEachOfLength, getArrayOfLength } from 'app/utils/ArrayUtils';
 import Entity from 'app/game/objects/entities/Entity';
-import { fungusTemplate, batTemplate, newtTemplate } from 'app/game/templates/MonsterTemplates';
+import { fungusTemplate, batTemplate, newtTemplate } from 'app/game/templates/actors/MonsterTemplates';
 import { ACTOR } from 'app/game/mixins/MixinConstants';
 import {getRandomPositionForCondition, getCompoundKey} from 'app/game/objects/GameUtils';
+import ItemRepository from 'app/game/repositories/ItemRepository';
+import {ITEM_MAX} from 'app/game/GameConstants';
+
 
 const templates = [fungusTemplate, batTemplate,newtTemplate];
 
@@ -34,6 +37,7 @@ export default class GameMap {
 		// add the player
 		this.addEntityAtRandomPosition(player, 0);
 		forEachOfLength(this._depth, (z) => this.populateMonsters(z));
+		forEachOfLength(this._depth, (z) => this.populateItems(z));
 		// setup the field of visions
 		this._setupFov();
 		this._setupExploredArray();
@@ -184,11 +188,11 @@ export default class GameMap {
 		this.setEntityAt(entity);
 	};
 
-	getConnectedStairsPosition = (z, isGoingUp) => {
+	getConnectedStairsPosition = (startingZ, isGoingUp) => {
 		const floorOffset = isGoingUp ? -1 : 1;
-		const floor = this._tiles[z + floorOffset];
-		let position = {};
-		// using find because to lazy to write for loops and break doesn't work in forEach
+		const floor = this._tiles[startingZ + floorOffset];
+		let position;
+		// using find because too lazy to write for loops and break doesn't work in forEach
 		floor.find((column, x) => {
 			return !!column.find((tile, y) => {
 				const isStair = isGoingUp ? tile.downStairs() : tile.upStairs();
@@ -259,15 +263,15 @@ export default class GameMap {
 	};
 
 	addItem = (x, y, z, item) => {
-
 		const key = getCompoundKey(x, y);
-		const items = this._items[z][key];
+		const floorItems = this._items[z];
+		const itemPile = floorItems[key];
 		// If we already have items at that position, simply append the item to the
 		// list of items.
-		if (items) {
-			items.push(item);
+		if (itemPile) {
+			itemPile.push(item);
 		} else {
-			items[key] = [item];
+			floorItems[key] = [item];
 		}
 	};
 
@@ -275,4 +279,11 @@ export default class GameMap {
 		const {x, y} = this.getRandomFloorPosition(z);
 		this.addItem(x, y, z, item);
 	};
+
+	populateItems = (z) => {
+		const itemCount = Math.floor(Math.random() * ITEM_MAX);
+		forEachOfLength(itemCount, () => {
+			this.addItemAtRandomPosition(ItemRepository.createRandom(), z);
+		});
+	}
 }
