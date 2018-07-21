@@ -83,6 +83,7 @@ export default class PlayScreen {
 
 
 		const visibleCells = {};
+
 		// Find all visible cells and update the object
 		this._map.getFov(currentDepth).compute(
 			this._player.getX(),
@@ -103,11 +104,11 @@ export default class PlayScreen {
 
 				if (DEBUG_DISPLAY || visible || this._map.isExplored(offsetX, offsetY, currentDepth)) {
 					// Check if we have an entity at the position
-					let glyph = this._map.getEntityAt(x, y, currentDepth);
+					let glyph = this._map.getEntityAt(offsetX, offsetY, currentDepth);
 
 					// Check for items
 					if (!glyph) {
-						const items = this._map.getItemsAt(x, y, currentDepth);
+						const items = this._map.getItemsAt(offsetX, offsetY, currentDepth);
 						if (items && items.length) {
 							// If we have items, we want to render the top most item
 							glyph = items[items.length - 1];
@@ -115,7 +116,7 @@ export default class PlayScreen {
 					}
 
 					// if nothing here, use the empty tile
-					if (!glyph) glyph = this._map.getTile(offsetX, offsetY, currentDepth)
+					if (!glyph) glyph = this._map.getTile(offsetX, offsetY, currentDepth);
 
 					// The foreground color becomes dark gray if the tile has been
 					// explored but is not visible
