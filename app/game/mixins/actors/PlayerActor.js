@@ -7,7 +7,7 @@ export default {
 	level: 1,
 	act: function() {
 		// Detect if the game is over
-		if (this.getHp() < 1) {
+		if (!this.isAlive()) {
 			// Send a last message to the player
 			sendMessage(this, 'You have died... Press [Enter] to continue!');
 			setGameOver();

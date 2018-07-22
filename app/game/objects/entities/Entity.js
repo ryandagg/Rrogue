@@ -1,69 +1,21 @@
+import DynamicTile from 'app/game/objects/DynamicTile';
 import { getCompoundKey } from 'app/game/objects/GameUtils';
-import Tile from 'app/game/objects/tile/Tile';
+import { sendMessage } from 'app/game/GameInterface';
+import { PLAYER_ACTOR } from 'app/game/mixins/MixinConstants';
 
-export default class Entity extends Tile {
+
+export default class Entity extends DynamicTile {
 	constructor(properties = {}) {
 		super(properties);
 		// Instantiate any properties from the passed object
-		const { x, y, z, name, mixins = [] } = properties;
-		this._name = name || '';
+		const { x, y, z} = properties;
 		this._x = x || 0;
 		this._y = y || 0;
 		this._z = z || 0;
+		this._alive = true;
 
 		this._map = null;
-
-		this._attachedMixins = {};
-
-		// Create a similar object for groups
-		this._attachedMixinGroups = {};
-
-		// Setup the object's mixins
-		mixins.forEach(mixin => {
-			// Copy over all properties from each mixin as long
-			// as it's not the name or the init property. We
-			// also make sure not to override a property that
-			// already exists on the entity.
-			Object.keys(mixin).forEach(key => {
-				if (
-					key !== 'init' &&
-					key !== 'name' &&
-					!this.hasOwnProperty(key)
-				) {
-					this[key] = mixin[key];
-				}
-			});
-
-			// Add the name of this mixin to our attached mixins
-			this._attachedMixins[mixin.name] = true;
-			// If a group name is present, add it
-			if (mixin.groupName) {
-				this._attachedMixinGroups[mixin.groupName] = true;
-			}
-
-			// Finally call the init function if there is one
-			if (mixin.init) {
-				mixin.init.call(this, properties);
-			}
-		});
 	}
-
-	hasMixin = lookup => {
-		// Allow passing the mixin itself or the name as a string
-		if (typeof lookup === 'object') {
-			return this._attachedMixins[lookup.name];
-		} else {
-			return (
-				this._attachedMixins[lookup] ||
-				this._attachedMixinGroups[lookup]
-			);
-		}
-	};
-
-	getName = () => this._name;
-	setName = name => {
-		this._name = name;
-	};
 
 	getX = () => this._x;
 	setX = x => {
@@ -99,5 +51,22 @@ export default class Entity extends Tile {
 	setMap = map => (this._map = map);
 	getMap = () => this._map;
 
-	getKey = () => getCompoundKey(this.getX(), this.getY())
+	getKey = () => getCompoundKey(this.getX(), this.getY());
+
+	isAlive = () => this._alive;
+
+	kill = () => {
+		// Only kill once!
+		if (!this._alive) {
+			return;
+		}
+		this._alive = false;
+
+		// Check if the player died, and if so call their act method to prompt the user.
+		if (this.hasMixin(PLAYER_ACTOR)) {
+			this.act();
+		} else {
+			this.getMap().removeEntity(this);
+		}
+	}
 }

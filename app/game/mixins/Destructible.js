@@ -11,14 +11,13 @@ export default {
 		this._hp -= damage;
 		// If have 0 or less HP, then remove ourselves from the map
 		if (this._hp <= 0) {
-			if (this.hasMixin(PLAYER_ACTOR)) {
+			if (!this.hasMixin(PLAYER_ACTOR)) {
 				sendMessage(this, 'You die!');
-				// force end game screen without too much nonsense
-				this.act();
 			} else {
 				sendMessage(attacker, `You kill the ${this.getName()}!`);
-				this.getMap().removeEntity(this);
 			}
+
+			this.kill();
 
 			this.getMap().removeEntity(this);
 		}
