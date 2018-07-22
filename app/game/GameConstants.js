@@ -70,6 +70,7 @@ export const MAP_CONFIGS = {
 	[UNIFORM]: UNIFORM_MAP_CONFIG,
 };
 
-export const EVENTS_TO_BIND = ['keydown', 'keyup', 'keypress'];
+export const KEY_DOWN = 'keydown';
+export const EVENTS_TO_BIND = [KEY_DOWN, 'keyup', 'keypress'];
 
-export const ITEM_MAX = 4;
+export const ITEM_MAX = 40;

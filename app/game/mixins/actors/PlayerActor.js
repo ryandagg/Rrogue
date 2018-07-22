@@ -1,6 +1,4 @@
 import { refreshScreen, sendMessage, setGameOver } from 'app/game/GameInterface';
-
-// import { refreshScreen } from 'app/game/GameInterface';
 import { ACTOR } from 'app/game/mixins/MixinConstants';
 
 export default {

@@ -1,4 +1,4 @@
-import Movable from 'app/game/mixins/Movable';
+import Movable from 'app/game/mixins/actors/Movable';
 import {ACTOR} from 'app/game/mixins/MixinConstants';
 
 export default {

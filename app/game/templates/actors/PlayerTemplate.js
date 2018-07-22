@@ -1,9 +1,10 @@
-import Movable from 'app/game/mixins/Movable';
-import PlayerActor from 'app/game/mixins/PlayerActor';
-import BumpAttacker from 'app/game/mixins/BumpAttacker';
+import Movable from 'app/game/mixins/actors/Movable';
+import PlayerActor from 'app/game/mixins/actors/PlayerActor';
+import BumpAttacker from 'app/game/mixins/actors/BumpAttacker';
 import Destructible from 'app/game/mixins/Destructible';
-import MessageRecipient from 'app/game/mixins/MessageRecipient';
-import Sight from 'app/game/mixins/Sight';
+import MessageRecipient from 'app/game/mixins/actors/MessageRecipient';
+import Sight from 'app/game/mixins/actors/Sight';
+import InventoryHolder from 'app/game/mixins/actors/InventoryHolder';
 
 export default {
 	character: '@',
@@ -18,5 +19,6 @@ export default {
 		Destructible,
 		MessageRecipient,
 		Sight,
+		InventoryHolder,
 	],
 };

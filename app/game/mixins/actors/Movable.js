@@ -41,6 +41,17 @@ export default {
 			// and if so simply walk onto it
 			// Update the entity's position
 			this.setPosition(x, y, z);
+
+			// Notify the entity that there are items at this position
+			const items = this.getMap().getItemsAt(x, y, z);
+			if (items) {
+				if (items.length === 1) {
+					sendMessage(this, `You see ${items[0].describeA()}.`);
+				} else {
+					sendMessage(this, 'There are several objects here.');
+				}
+			}
+
 			return true;
 		} /*else if (tile.diggable()) {
             // Check if the tile is diggable, and

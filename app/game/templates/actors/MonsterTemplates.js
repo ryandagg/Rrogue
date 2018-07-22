@@ -1,7 +1,7 @@
-import * as monsterMixins from 'app/game/mixins/monsters/MonsterMixins';
-import BumpAttacker from 'app/game/mixins/BumpAttacker';
+import * as monsterMixins from 'app/game/mixins/actors/monsters/MonsterMixins';
+import BumpAttacker from 'app/game/mixins/actors/BumpAttacker';
 import Destructible from 'app/game/mixins/Destructible';
-import WanderActor from 'app/game/mixins/WanderActor';
+import WanderActor from 'app/game/mixins/actors/WanderActor';
 
 export const fungusTemplate = {
 	character: 'M',

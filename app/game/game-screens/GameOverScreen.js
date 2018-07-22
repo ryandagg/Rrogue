@@ -1,6 +1,7 @@
 import ROT from 'rot-js';
 import { HOME_SCREEN } from 'app/game/game-screens/ScreenNameConstants';
 import { switchScreen } from 'app/game/GameInterface';
+import {KEY_DOWN} from 'app/game/GameConstants';
 
 export default class GameOverScreen {
 	enter = () => {
@@ -17,7 +18,7 @@ export default class GameOverScreen {
 	};
 	handleInput = (inputType, inputData) => {
 		// When [Enter] is pressed, go to the play screen
-		if (inputType === 'keydown') {
+		if (inputType === KEY_DOWN) {
 			if (inputData.keyCode === ROT.VK_RETURN) {
 				switchScreen(HOME_SCREEN);
 			}
