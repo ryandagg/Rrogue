@@ -203,6 +203,7 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
+    "babel-plugin-jsx-display-if": "^3.0.0",
     "devtron": "^1.4.0",
     "electron-debug": "^1.5.0",
     "font-awesome": "^4.7.0",

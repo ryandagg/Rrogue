@@ -20,7 +20,8 @@
         ["flow-runtime", {
           "assert": true,
           "annotate": true
-        }]
+        }],
+        "jsx-display-if"
       ]
     }
   }

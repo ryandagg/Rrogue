@@ -4,6 +4,7 @@ import {
 	MAP_SIZE,
 	DEBUG_DISPLAY,
 	KEY_DOWN,
+	MESSAGE_DISPLAY_MAX,
 } from 'app/game/GameConstants';
 import GameMap from 'app/game/objects/GameMap';
 import { forEachOfLength } from 'app/utils/ArrayUtils';
@@ -13,6 +14,8 @@ import LevelBuilder from 'app/game/objects/LevelBuilder';
 import {switchScreen, refreshScreen, sendMessage} from 'app/game/GameInterface';
 import {GAME_OVER_SCREEN} from 'app/game/game-screens/ScreenNameConstants';
 import {inventoryScreen, pickupScreen, dropScreen} from 'app/game/game-screens/ItemListScreen';
+import {setGamePlaying} from 'app/components/game-info/GameActions';
+import {dispatch} from 'app/game/ReduxUtils';
 
 
 export default class PlayScreen {
@@ -40,13 +43,14 @@ export default class PlayScreen {
 		const didMove = this._player.tryMove(newX, newY, newZ, this.getMap());
 		if (didMove) {
 			// Unlock the engine
-			this._map.getEngine(this._player.getZ()).unlock();
+			this._map.unlockEngine(this._player.getZ());
 		}
 	};
 
 	setGameOver = () => this._gameEnded = true;
 
 	enter = () => {
+		dispatch(setGamePlaying(true));
 		const tiles = new LevelBuilder({
 			width: MAP_SIZE.width,
 			height: MAP_SIZE.height,
@@ -149,7 +153,7 @@ export default class PlayScreen {
 		// Get the messages in the player's queue and render them
 		const messages = this._player.getMessages();
 		let messageY = 0;
-		messages.forEach(message => {
+		messages.slice(messages.length - MESSAGE_DISPLAY_MAX).forEach(message => {
 			// Draw each message, adding the number of lines
 			messageY += display.drawText(
 				0,

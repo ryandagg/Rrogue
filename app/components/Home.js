@@ -4,16 +4,24 @@ import React from 'react';
 import styles from './Home.css';
 import { lifecycle, compose } from 'recompose';
 import { initEngine, getCanvasElement } from '../game/GameInterface';
+import {connect} from 'react-redux';
+import HitPointsView from 'app/components/game-info/HitPointsView';
 
-const Home = () => {
+const Home = ({isPlaying}) => {
 	return (
 		<div>
-			<div className={styles.container} data-tid="container" />
+			<div className={styles.container} data-tid="container"/>
+			<HitPointsView display-if={isPlaying}/>
 		</div>
 	);
 };
 
 export default compose(
+	connect(({gameInfo = {}}) => {
+		return {
+			isPlaying: gameInfo.isPlaying,
+		};
+	}),
 	lifecycle({
 		componentDidMount() {
 			const gameRoot = document.getElementById('gameRoot');
@@ -29,7 +37,7 @@ export default compose(
 				Math.floor(window.innerHeight - 250),
 				728,
 			);
-			initEngine({ displayWidth, displayHeight });
+			initEngine({ displayWidth, displayHeight});
 			// Add the container to our HTML page
 			gameRoot.appendChild(getCanvasElement());
 		},

@@ -15,7 +15,7 @@ export default {
 		refreshScreen();
 		// Lock the engine and wait asynchronously
 		// for the player to press a key.
-		this.getMap().getEngine(this.getZ()).lock();
+		this.getMap().lockEngine(this.getZ());
 	},
 	getAttackValue: function() {
 		return this.level * 2;

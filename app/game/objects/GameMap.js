@@ -7,7 +7,8 @@ import { ACTOR } from 'app/game/mixins/MixinConstants';
 import {getRandomPositionForCondition, getCompoundKey} from 'app/game/objects/GameUtils';
 import ItemRepository from 'app/game/repositories/ItemRepository';
 import {ITEM_MAX} from 'app/game/GameConstants';
-
+import {dispatch} from 'app/game/ReduxUtils';
+import {setPlayerState} from 'app/components/game-info/PlayerInfoActions';
 
 const templates = [fungusTemplate, batTemplate,newtTemplate];
 
@@ -33,6 +34,7 @@ export default class GameMap {
 		// todo: create 1 engine and scheduler per level?
 		this._schedulers = arrayOfDepth.map(() => new ROT.Scheduler.Simple());
 		this._engines = this._schedulers.map((scheduler) => new ROT.Engine(scheduler));
+		this._player = player;
 
 		// add the player
 		this.addEntityAtRandomPosition(player, 0);
@@ -84,6 +86,14 @@ export default class GameMap {
 	);
 
 	getEngine = (z) => this._engines[z];
+
+	lockEngine = (z) => {
+		this.getEngine(z).lock();
+		// as good a time as any to update Redux
+		dispatch(setPlayerState(this._player));
+	};
+
+	unlockEngine = (z) => this.getEngine(z).unlock();
 
 	/** entities **/
 	getEntitiesOnDepth = (depth) => this._entities[depth];
@@ -166,7 +176,7 @@ export default class GameMap {
 	updateEntityPosition = (entity, oldX, oldY, oldZ) => {
 		// Delete the old key if it is the same entity and we have old positions.
 		// expect the entities internal information to incorrect
-		if (oldX && this.getEntityAt(oldX, oldY, oldZ) === entity) {
+		if (oldX != null && this.getEntityAt(oldX, oldY, oldZ) === entity) {
 			this.deleteEntityAt(oldX, oldY, oldZ);
 		}
 		// Make sure the entity's position is within bounds

@@ -2,6 +2,7 @@ import Game from './Game';
 
 let game;
 
+
 export const getDisplay = () => game.getDisplay();
 export const getCanvasElement = () => game.getCanvasElement();
 export const initEngine = ({ displayWidth, displayHeight }) => {

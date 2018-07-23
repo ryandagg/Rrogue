@@ -6,6 +6,8 @@ import { createHashHistory } from 'history';
 import { routerMiddleware, routerActions } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers';
+import {setDispatch} from 'app/game/ReduxUtils';
+
 
 const history = createHashHistory();
 
@@ -52,6 +54,7 @@ const configureStore = initialState => {
 
 	// Create Store
 	const store = createStore(rootReducer, initialState, enhancer);
+	setDispatch(store.dispatch);
 
 	if (module.hot) {
 		module.hot.accept(
