@@ -150,21 +150,21 @@ export default class PlayScreen {
 			});
 		});
 
-		// Get the messages in the player's queue and render them
-		const messages = this._player.getMessages();
-		let messageY = 0;
-		messages.slice(messages.length - MESSAGE_DISPLAY_MAX).forEach(message => {
-			// Draw each message, adding the number of lines
-			messageY += display.drawText(
-				0,
-				messageY,
-				'%c{white}%b{black}' + message,
-			);
-		});
-
-		// Render player HP
-		const stats = '%c{white}%b{black}' + `HP: ${this._player.getHp()}/${this._player.getMaxHp()}`;
-		display.drawText(0, DISPLAY_OPTIONS.height - 1, stats);
+		// // Get the messages in the player's queue and render them
+		// const messages = this._player.getMessages();
+		// let messageY = 0;
+		// messages.slice(messages.length - MESSAGE_DISPLAY_MAX).forEach(message => {
+		// 	// Draw each message, adding the number of lines
+		// 	messageY += display.drawText(
+		// 		0,
+		// 		messageY,
+		// 		'%c{white}%b{black}' + message,
+		// 	);
+		// });
+		//
+		// // Render player HP
+		// const stats = '%c{white}%b{black}' + `HP: ${this._player.getHp()}/${this._player.getMaxHp()}`;
+		// display.drawText(0, DISPLAY_OPTIONS.height - 1, stats);
 	};
 
 	moveN = () => this.move(0, -1);

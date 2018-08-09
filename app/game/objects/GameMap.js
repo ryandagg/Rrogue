@@ -8,7 +8,7 @@ import {getRandomPositionForCondition, getCompoundKey} from 'app/game/objects/Ga
 import ItemRepository from 'app/game/repositories/ItemRepository';
 import {ITEM_MAX} from 'app/game/GameConstants';
 import {dispatch} from 'app/game/ReduxUtils';
-import {setPlayerState} from 'app/components/game-info/PlayerInfoActions';
+import {setPlayerState, setGameMessages} from 'app/components/game-info/PlayerInfoActions';
 
 const templates = [fungusTemplate, batTemplate,newtTemplate];
 
@@ -91,6 +91,7 @@ export default class GameMap {
 		this.getEngine(z).lock();
 		// as good a time as any to update Redux
 		dispatch(setPlayerState(this._player));
+		dispatch(setGameMessages(this._player.getMessages()));
 	};
 
 	unlockEngine = (z) => this.getEngine(z).unlock();

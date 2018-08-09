@@ -10,3 +10,4 @@ export default {
 	[SCREEN_NAMES.GAME_OVER_SCREEN]: GameOverScreen,
 	[SCREEN_NAMES.ITEM_LIST_SUB_SCREEN]: ItemListScreen,
 };
+

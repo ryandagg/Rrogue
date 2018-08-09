@@ -1,13 +1,13 @@
 // @flow
 import React from 'react';
-import styles from './HitPointsView.scss';
+import styles from './PlayerStatsView.scss';
 import {compose } from 'recompose';
 import {connect} from 'react-redux';
 
-const HitPointsView = ({currentHp, maxHp}) => {
+const PlayerStatsView = ({currentHp, maxHp}) => {
 	return (
-		<div>
-			<div className={styles.hpWrapper}>{currentHp}/{maxHp}</div>
+		<div display-if={currentHp != null}>
+			<div className={styles.hpWrapper}>HP: {currentHp}/{maxHp}</div>
 		</div>
 	);
 };
@@ -20,4 +20,4 @@ export default compose(
 			maxHp: player.maxHp,
 		};
 	})
-)(HitPointsView);
+)(PlayerStatsView);

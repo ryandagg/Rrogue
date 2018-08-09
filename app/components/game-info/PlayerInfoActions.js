@@ -1,6 +1,15 @@
-import {SET_PLAYER_STATE} from 'app/components/game-info/GameInfoReducer';
+import {SET_PLAYER_STATE, SET_GAME_MESSAGES} from 'app/components/game-info/GameInfoReducer';
 
 
 export const setPlayerState = (player) => (dispatch) => {
-	dispatch({type: SET_PLAYER_STATE, payload: player});
+	const payload = {
+		hp: player.getHp(),
+		maxHp: player.getMaxHp(),
+	};
+	dispatch({type: SET_PLAYER_STATE, payload});
+};
+
+
+export const setGameMessages = (messages) => (dispatch) => {
+	dispatch({type: SET_GAME_MESSAGES, payload: messages});
 };

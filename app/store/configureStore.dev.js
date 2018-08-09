@@ -4,7 +4,6 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { createHashHistory } from 'history';
 import { routerMiddleware, routerActions } from 'react-router-redux';
-import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers';
 import {setDispatch} from 'app/game/ReduxUtils';
 
@@ -18,17 +17,6 @@ const configureStore = initialState => {
 
 	// Thunk Middleware
 	middleware.push(thunk);
-
-	// Logging Middleware
-	const logger = createLogger({
-		level: 'info',
-		collapsed: true,
-	});
-
-	// Skip redux logs in console during the tests
-	if (process.env.NODE_ENV !== 'test') {
-		middleware.push(logger);
-	}
 
 	// Router Middleware
 	const router = routerMiddleware(history);

@@ -5,13 +5,17 @@ import styles from './Home.css';
 import { lifecycle, compose } from 'recompose';
 import { initEngine, getCanvasElement } from '../game/GameInterface';
 import {connect} from 'react-redux';
-import HitPointsView from 'app/components/game-info/HitPointsView';
+import PlayerStatsView from 'app/components/game-info/player-stats/PlayerStatsView';
+import GameMessages from 'app/components/game-info/game-messages/GameMessagesView';
 
 const Home = ({isPlaying}) => {
 	return (
 		<div>
 			<div className={styles.container} data-tid="container"/>
-			<HitPointsView display-if={isPlaying}/>
+			<div display-if={isPlaying} className={styles.hud}>
+				<PlayerStatsView/>
+				<GameMessages/>
+			</div>
 		</div>
 	);
 };
