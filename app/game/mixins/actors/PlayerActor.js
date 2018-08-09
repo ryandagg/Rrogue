@@ -1,6 +1,7 @@
 import { refreshScreen, sendMessage, setGameOver } from 'app/game/GameInterface';
 import { ACTOR } from 'app/game/mixins/MixinConstants';
 
+
 export default {
 	name: 'PlayerActor',
 	groupName: ACTOR,

@@ -4,6 +4,6 @@ export default class Item extends DynamicTile {
 	constructor(properties = {}) {
 		super(properties);
 
-	}
+	};
 
 };

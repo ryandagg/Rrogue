@@ -3,10 +3,10 @@ import { getArrayOfLength } from 'app/utils/ArrayUtils';
 
 export default {
 	name: 'InventoryHolder',
-	init: function({inventorySlots = 10}) {
+	init: function({startingInventory = [], inventorySlots = 10}) {
 		// Default to 10 inventory slots.
 		// Set up an empty inventory.
-		this._items = getArrayOfLength(inventorySlots);
+		this._items = startingInventory.concat(getArrayOfLength(inventorySlots - startingInventory.length));
 	},
 
 	getItems: function() {

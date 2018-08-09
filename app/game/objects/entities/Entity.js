@@ -1,6 +1,5 @@
 import DynamicTile from 'app/game/objects/DynamicTile';
 import { getCompoundKey } from 'app/game/objects/GameUtils';
-import { sendMessage } from 'app/game/GameInterface';
 import { PLAYER_ACTOR } from 'app/game/mixins/MixinConstants';
 
 

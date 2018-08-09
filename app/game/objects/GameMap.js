@@ -151,27 +151,38 @@ export default class GameMap {
 		});
 	};
 
-	getEntitiesWithinRadius = ({centerX, centerY, depth, radius}) => {
-		// Determine our bounds
-		const leftX = centerX - radius;
-		const rightX = centerX + radius;
-		const topY = centerY - radius;
-		const bottomY = centerY + radius;
-		const levelEntities = this._entities[depth];
-		// Iterate through our entities, adding any which are within the bounds
-		return Object.keys(levelEntities).reduce((result, key) => {
-			const entity = levelEntities[key];
-			if (
-				entity.getX() >= leftX &&
-				entity.getX() <= rightX &&
-				entity.getY() >= topY &&
-				entity.getY() <= bottomY &&
-				entity.getZ() === depth
-			) {
-				result.push(entity);
+	getEntitiesWithinPattern = ({centerX, centerY, depth, pattern, limitRange = Infinity}) => {
+		const result = [];
+		const length = pattern.length;
+		const halfLength = Math.floor(length/2);
+		const xStart = centerX - halfLength;
+		const yStart = centerY - halfLength;
+		forEachOfLength(length, (x) => {
+			const entityX = xStart + x;
+			if (Math.abs(centerY - entityX) <= limitRange) {
+				forEachOfLength(length, (y) => {
+					if (pattern[x][y] && Math.abs(centerY - yStart + y) <= limitRange) {
+						const entity = this.getEntityAt(entityX, yStart + y, depth);
+						if (entity) result.push(entity);
+					}
+				});
 			}
-			return result;
-		}, []);
+		});
+
+		return result;
+	};
+
+	getEntitiesWithinRadius = ({radius, ...rest}) => {
+		const pattern = [];
+		forEachOfLength(radius, () => {
+			const row = [];
+			forEachOfLength(radius, () => {
+				row.push(true);
+			});
+			pattern.push(row);
+		});
+
+		return this.getEntitiesWithinPattern({pattern, ...rest});
 	};
 
 	updateEntityPosition = (entity, oldX, oldY, oldZ) => {

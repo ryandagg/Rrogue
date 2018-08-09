@@ -18,7 +18,7 @@ const GameMessages = ({messages}) => {
 export default compose(
 	connect(({gameInfo = {}}) => {
 		const {messages = []} = gameInfo;
-		return {messages: [...messages.reverse()]};
+		return {messages: [...messages]}; // spreading to create a new array so that shouldUpdate actually gets fired
 	}),
 	shouldUpdate((props, nextProps) => {
 		return props.messages.length !== nextProps.messages.length;

@@ -8,8 +8,8 @@ export default class Repository {
 	}
 
 	// Define a new named template.
-	define = (name, template) => {
-		this._templates[name] = template;
+	define = (template) => {
+		this._templates[template.name] = template;
 	};
 
 	// Create an object based on a template.

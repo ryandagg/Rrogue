@@ -4,7 +4,6 @@ import {
 	MAP_SIZE,
 	DEBUG_DISPLAY,
 	KEY_DOWN,
-	MESSAGE_DISPLAY_MAX,
 } from 'app/game/GameConstants';
 import GameMap from 'app/game/objects/GameMap';
 import { forEachOfLength } from 'app/utils/ArrayUtils';
