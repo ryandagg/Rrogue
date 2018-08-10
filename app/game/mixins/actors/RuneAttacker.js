@@ -14,13 +14,13 @@ export default {
 			centerX,
 			centerY,
 			depth: this.getZ(),
-			pattern: spell.getPattern(),
+			pattern: spell.pattern,
 		});
 
 		targets.forEach(target => {
 			// Only remove the entity if they were destructible
 			if (target.hasMixin(DESTRUCTIBLE)) {
-				const damage = spell.getAttackValue();
+				const damage = spell.power;
 				sendMessage(this, `You strike the ${target.getName()} for ${damage} damage!`);
 				sendMessage(target, `The ${this.getName()} strikes you for ${damage} damage!`);
 

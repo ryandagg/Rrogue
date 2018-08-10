@@ -5,7 +5,7 @@ import Destructible from 'app/game/mixins/Destructible';
 import MessageRecipient from 'app/game/mixins/actors/MessageRecipient';
 import Sight from 'app/game/mixins/actors/Sight';
 import InventoryHolder from 'app/game/mixins/actors/InventoryHolder';
-import Spell from 'app/game/objects/Spells';
+import Spell from 'app/game/objects/Spell';
 import TargetingRune from 'app/game/objects/items/TargetingRune';
 import Rune from 'app/game/objects/items/Rune';
 import {SINGLE} from 'app/game/repositories/PatternRepository';
