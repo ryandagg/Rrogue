@@ -15,7 +15,8 @@ import {GAME_OVER_SCREEN} from 'app/game/game-screens/ScreenNameConstants';
 import {inventoryScreen, pickupScreen, dropScreen} from 'app/game/game-screens/ItemListScreen';
 import {setGamePlaying} from 'app/components/game-info/GameActions';
 import {dispatch} from 'app/game/ReduxUtils';
-
+import reactOverlay from 'app/game/game-screens/ReactOverlayScreen';
+import {spellScreenTemplate} from 'app/components/screens/SpellScreen.js';
 
 export default class PlayScreen {
 	_map = null;
@@ -24,7 +25,7 @@ export default class PlayScreen {
 
 	setSubScreen = (subScreen, setupArgs) => {
 		this._subScreen = subScreen;
-		if (subScreen) subScreen.setup(setupArgs, () => this.setSubScreen(null));
+		if (subScreen && subScreen.setup) subScreen.setup(setupArgs, () => this.setSubScreen(null));
 
 		// Refresh screen on changing the subscreen
 		refreshScreen();
@@ -194,7 +195,8 @@ export default class PlayScreen {
 			}
 
 
-			// Movement
+			// looking at .key here because it's easier than keeping track of shift key state
+			// todo: look at .key instead of keyCode for all key presses??
 			if (inputData.shiftKey) {
 				switch (inputData.key) {
 					case '>':
@@ -208,6 +210,11 @@ export default class PlayScreen {
 				}
 			} else {
 				switch (inputData.keyCode) {
+					case ROT.VK_S: {
+						// Show the spells screen in React
+						this.setSubScreen(reactOverlay(spellScreenTemplate));
+						break;
+					}
 					case ROT.VK_I: {
 						const hasItems = this._player.getItems().filter(x => !!x).length === 0;
 						if (hasItems) {
