@@ -28,6 +28,7 @@ const squareGenerator = (d) => {
 
 
 export const SINGLE = 'SINGLE';
+export const DIAMOND_2_EMPTY_SELF = 'DIAMOND_2_EMPTY_SELF';
 
 const PatternRepository = new Repository('runeTargetPatterns', {}.constructor);
 
@@ -94,7 +95,7 @@ const diamondR2 = [
 
 addSelfAndRanged('diamond-2', diamondR2);
 
-const diamondR2Empty1 = [
+const diamond2EmptySelf = [
 	[_, _, X, _, _],
 	[_, X, X, X, _],
 	[X, X, _, X, X],
@@ -102,7 +103,7 @@ const diamondR2Empty1 = [
 	[_, _, X, _, _],
 ];
 
-addSelfAndRanged('diamond-2-empty-1', diamondR2Empty1);
+addSelfAndRanged(DIAMOND_2_EMPTY_SELF, diamond2EmptySelf);
 
 const squareR1 = [
 	[X, X, X],

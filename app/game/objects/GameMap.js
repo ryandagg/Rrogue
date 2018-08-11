@@ -9,6 +9,8 @@ import ItemRepository from 'app/game/repositories/ItemRepository';
 import {ITEM_MAX} from 'app/game/GameConstants';
 import {dispatch} from 'app/game/ReduxUtils';
 import {setPlayerState, setGameMessages} from 'app/components/game-info/PlayerInfoActions';
+import {getStartForDiagram} from 'app/utils/MatrixUtils';
+
 
 const templates = [fungusTemplate, batTemplate,newtTemplate];
 
@@ -154,9 +156,7 @@ export default class GameMap {
 	getEntitiesWithinPattern = ({centerX, centerY, depth, pattern, limitRange = Infinity}) => {
 		const result = [];
 		const length = pattern.length;
-		const halfLength = Math.floor(length/2);
-		const xStart = centerX - halfLength;
-		const yStart = centerY - halfLength;
+		const {x: xStart, y: yStart} = getStartForDiagram({x: centerX, y: centerY}, pattern);
 		forEachOfLength(length, (x) => {
 			const entityX = xStart + x;
 			if (Math.abs(centerY - entityX) <= limitRange) {

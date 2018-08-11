@@ -18,16 +18,19 @@ import {setGamePlaying} from 'app/components/game-info/GameActions';
 import {dispatch} from 'app/game/ReduxUtils';
 import reactOverlay from 'app/game/game-screens/ReactOverlayScreen';
 import {spellScreenTemplate} from 'app/components/screens/SpellScreen.js';
+import {getStartForDiagram} from 'app/utils/MatrixUtils';
 
 
 const getSpellOverlay = (center, spell) => {
 	let result = {};
+	const pattern = spell.getTargetPattern();
+	const {x: xStart, y: yStart} = getStartForDiagram(center, pattern);
 	spell.getTargetPattern().forEach((row, xIndex) => {
 		let newRow = {};
 		row.forEach((isIn, yIndex) => {
-			newRow[center.y - yIndex] = isIn;
+			newRow[yStart + yIndex] = isIn;
 		});
-		result[center.x - xIndex] = newRow;
+		result[xStart + xIndex] = newRow;
 
 	});
 	return result;
@@ -173,6 +176,7 @@ export default class PlayScreen {
 
 	};
 
+
 	moveN = () => this.move(0, -1);
 	moveS = () => this.move(0, 1);
 	moveE = () => this.move(1, 0);
@@ -195,6 +199,11 @@ export default class PlayScreen {
 		this._spellCenter.x += x;
 		this._spellCenter.y += y;
 		refreshScreen();
+	};
+
+
+	fireSelectedSpell = () => {
+
 	};
 
 	moveTargetN = () => this.adjustSpellCenter(0, -1);
@@ -247,6 +256,9 @@ export default class PlayScreen {
 						break;
 					case COMPASS_KEYS.SOUTHEAST:
 						this.moveTargetSE();
+						break;
+					case ROT.VK_RETURN:
+						this.fireSelectedSpell();
 						break;
 					default:
 						break;
@@ -338,6 +350,34 @@ export default class PlayScreen {
 					case ROT.VK_1:
 						this.setTargetSpell(0);
 						break;
+					case ROT.VK_2:
+						this.setTargetSpell(1);
+						break;
+					case ROT.VK_3:
+						this.setTargetSpell(2);
+						break;
+					case ROT.VK_4:
+						this.setTargetSpell(3);
+						break;
+					case ROT.VK_5:
+						this.setTargetSpell(4);
+						break;
+					case ROT.VK_6:
+						this.setTargetSpell(5);
+						break;
+					case ROT.VK_7:
+						this.setTargetSpell(6);
+						break;
+					case ROT.VK_8:
+						this.setTargetSpell(7);
+						break;
+					case ROT.VK_9:
+						this.setTargetSpell(8);
+						break;
+					case ROT.VK_0:
+						this.setTargetSpell(9);
+						break;
+
 					default:
 						break;
 				}

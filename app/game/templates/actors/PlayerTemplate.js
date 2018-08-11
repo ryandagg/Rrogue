@@ -9,13 +9,14 @@ import RuneAttacker from 'app/game/mixins/actors/RuneAttacker';
 import Spell from 'app/game/objects/Spell';
 import TargetingRune from 'app/game/objects/items/TargetingRune';
 import Rune from 'app/game/objects/items/Rune';
-import {SINGLE} from 'app/game/repositories/PatternRepository';
+import {SINGLE, DIAMOND_2_EMPTY_SELF} from 'app/game/repositories/PatternRepository';
 
 
 const startingInventory = [
 	new TargetingRune({patternType: SINGLE}),
 	new Rune({power: 4, cost: 2}),
 	new Rune({power: 7, cost: 4}),
+	new TargetingRune({patternType: DIAMOND_2_EMPTY_SELF}), // todo: comment out, for testing
 ];
 
 export default {
@@ -51,6 +52,14 @@ export default {
 				startingInventory[2],
 			],
 			name: 'hot sauce',
+		}),
+		new Spell({ // todo: testing only
+			targetRune: startingInventory[3],
+			runes: [
+				startingInventory[2],
+				startingInventory[2],
+			],
+			name: 'hot sauce testing',
 		}),
 	],
 };
