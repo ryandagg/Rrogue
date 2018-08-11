@@ -1,3 +1,4 @@
+import ROT from 'rot-js';
 import {
 	PLAY_SCREEN /* HOME_SCREEN,*/,
 } from 'app/game/game-screens/ScreenNameConstants';
@@ -76,3 +77,14 @@ export const EVENTS_TO_BIND = [KEY_DOWN, 'keyup', 'keypress'];
 export const ITEM_MAX = 40;
 
 export const MESSAGE_DISPLAY_MAX = 3;
+
+export const COMPASS_KEYS = {
+	NORTH: ROT.VK_K,
+	SOUTH: ROT.VK_J,
+	EAST: ROT.VK_L,
+	WEST: ROT.VK_H,
+	NORTHWEST: ROT.VK_Y,
+	NORTHEAST: ROT.VK_U,
+	SOUTHEAST: ROT.VK_N,
+	SOUTHWEST: ROT.VK_B,
+};

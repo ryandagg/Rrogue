@@ -31,4 +31,8 @@ export default {
 	getAttackValue: function() {
 		return this._attackValue;
 	},
+	targetSpell: function(index) {
+		const toCast = this.spells[index];
+
+	},
 };

@@ -22,8 +22,8 @@ export default class Rune extends Item {
 		});
 
 		this.heals = heals;
-		this.cost = cost;
-		this.power = power;
+		this.cost = cost || 0;
+		this.power = power || 0;
 		this.uid = getUuid();
 		this.multiplier = multiplier || 0;
 		this.costModifier = costModifier || 0;

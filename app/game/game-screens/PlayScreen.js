@@ -4,6 +4,7 @@ import {
 	MAP_SIZE,
 	DEBUG_DISPLAY,
 	KEY_DOWN,
+	COMPASS_KEYS,
 } from 'app/game/GameConstants';
 import GameMap from 'app/game/objects/GameMap';
 import { forEachOfLength } from 'app/utils/ArrayUtils';
@@ -18,10 +19,26 @@ import {dispatch} from 'app/game/ReduxUtils';
 import reactOverlay from 'app/game/game-screens/ReactOverlayScreen';
 import {spellScreenTemplate} from 'app/components/screens/SpellScreen.js';
 
+
+const getSpellOverlay = (center, spell) => {
+	let result = {};
+	spell.getTargetPattern().forEach((row, xIndex) => {
+		let newRow = {};
+		row.forEach((isIn, yIndex) => {
+			newRow[center.y - yIndex] = isIn;
+		});
+		result[center.x - xIndex] = newRow;
+
+	});
+	return result;
+};
+
 export default class PlayScreen {
 	_map = null;
 	_player = null;
 	_gameEnded = false;
+	_spellSelected = null;
+	_spellCenter = {};
 
 	setSubScreen = (subScreen, setupArgs) => {
 		this._subScreen = subScreen;
@@ -114,6 +131,8 @@ export default class PlayScreen {
 				this._map.setExplored(x, y, currentDepth, true);
 			});
 
+		const spellOverlay = this._spellSelected ? getSpellOverlay(this._spellCenter, this._spellSelected) : undefined;
+
 		forEachOfLength(DISPLAY_OPTIONS.width, x => {
 			// Add all the tiles
 			const offsetX = x + topLeftX;
@@ -144,27 +163,14 @@ export default class PlayScreen {
 						y,
 						glyph.getChar(),
 						visible ? glyph.getForeground() : 'darkGray',
-						glyph.getBackground(),
+						spellOverlay && spellOverlay[offsetX] && spellOverlay[offsetX][offsetY]
+							? 'lightBlue'
+							: glyph.getBackground(),
 					);
 				}
 			});
 		});
 
-		// // Get the messages in the player's queue and render them
-		// const messages = this._player.getMessages();
-		// let messageY = 0;
-		// messages.slice(messages.length - MESSAGE_DISPLAY_MAX).forEach(message => {
-		// 	// Draw each message, adding the number of lines
-		// 	messageY += display.drawText(
-		// 		0,
-		// 		messageY,
-		// 		'%c{white}%b{black}' + message,
-		// 	);
-		// });
-		//
-		// // Render player HP
-		// const stats = '%c{white}%b{black}' + `HP: ${this._player.getHp()}/${this._player.getMaxHp()}`;
-		// display.drawText(0, DISPLAY_OPTIONS.height - 1, stats);
 	};
 
 	moveN = () => this.move(0, -1);
@@ -177,6 +183,28 @@ export default class PlayScreen {
 	moveSE = () => this.move(1, 1);
 	moveDown = () => this.move(0, 0, 1);
 	moveUp = () => this.move(0, 0, -1);
+
+
+	setTargetSpell = (index) => {
+		this._spellSelected = this._player.spells[index];
+		this._spellCenter = {x: this._player.getX(), y: this._player.getY()};
+		refreshScreen();
+	};
+
+	adjustSpellCenter = (x, y) => {
+		this._spellCenter.x += x;
+		this._spellCenter.y += y;
+		refreshScreen();
+	};
+
+	moveTargetN = () => this.adjustSpellCenter(0, -1);
+	moveTargetS = () => this.adjustSpellCenter(0, 1);
+	moveTargetE = () => this.adjustSpellCenter(1, 0);
+	moveTargetW = () => this.adjustSpellCenter(-1, 0);
+	moveTargetNW = () => this.adjustSpellCenter(-1, -1);
+	moveTargetNE = () => this.adjustSpellCenter(1, -1);
+	moveTargetSW = () => this.adjustSpellCenter(-1, 1);
+	moveTargetSE = () => this.adjustSpellCenter(1, 1);
 
 	handleInput = (inputType, inputData) => {
 		if (inputType === KEY_DOWN) {
@@ -194,10 +222,38 @@ export default class PlayScreen {
 				return;
 			}
 
-
-			// looking at .key here because it's easier than keeping track of shift key state
-			// todo: look at .key instead of keyCode for all key presses??
-			if (inputData.shiftKey) {
+			if (this._spellSelected) {
+				switch (inputData.keyCode) {
+					case COMPASS_KEYS.WEST:
+						this.moveTargetW();
+						break;
+					case COMPASS_KEYS.EAST:
+						this.moveTargetE();
+						break;
+					case COMPASS_KEYS.NORTH:
+						this.moveTargetN();
+						break;
+					case COMPASS_KEYS.SOUTH:
+						this.moveTargetS();
+						break;
+					case COMPASS_KEYS.NORTHWEST:
+						this.moveTargetNW();
+						break;
+					case COMPASS_KEYS.NORTHEAST:
+						this.moveTargetNE();
+						break;
+					case COMPASS_KEYS.SOUTHWEST:
+						this.moveTargetSW();
+						break;
+					case COMPASS_KEYS.SOUTHEAST:
+						this.moveTargetSE();
+						break;
+					default:
+						break;
+				}
+			} else if (inputData.shiftKey) {
+				// looking at .key here because it's easier than keeping track of shift key state
+				// todo: look at .key instead of keyCode for all key presses??
 				switch (inputData.key) {
 					case '>':
 						this.moveDown();
@@ -252,32 +308,35 @@ export default class PlayScreen {
 						break;
 					}
 					// traditional roguelike bindings
-					case ROT.VK_H:
+					case COMPASS_KEYS.WEST:
 						this.moveW();
 						break;
-					case ROT.VK_L:
+					case COMPASS_KEYS.EAST:
 						this.moveE();
 						break;
-					case ROT.VK_K:
+					case COMPASS_KEYS.NORTH:
 						this.moveN();
 						break;
-					case ROT.VK_J:
+					case COMPASS_KEYS.SOUTH:
 						this.moveS();
 						break;
-					case ROT.VK_Y:
+					case COMPASS_KEYS.NORTHWEST:
 						this.moveNW();
 						break;
-					case ROT.VK_U:
+					case COMPASS_KEYS.NORTHEAST:
 						this.moveNE();
 						break;
-					case ROT.VK_B:
+					case COMPASS_KEYS.SOUTHWEST:
 						this.moveSW();
 						break;
-					case ROT.VK_N:
+					case COMPASS_KEYS.SOUTHEAST:
 						this.moveSE();
 						break;
 					case ROT.VK_PERIOD:
 						this.move(0, 0);
+						break;
+					case ROT.VK_1:
+						this.setTargetSpell(0);
 						break;
 					default:
 						break;

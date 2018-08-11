@@ -5,6 +5,7 @@ import Destructible from 'app/game/mixins/Destructible';
 import MessageRecipient from 'app/game/mixins/actors/MessageRecipient';
 import Sight from 'app/game/mixins/actors/Sight';
 import InventoryHolder from 'app/game/mixins/actors/InventoryHolder';
+import RuneAttacker from 'app/game/mixins/actors/RuneAttacker';
 import Spell from 'app/game/objects/Spell';
 import TargetingRune from 'app/game/objects/items/TargetingRune';
 import Rune from 'app/game/objects/items/Rune';
@@ -31,6 +32,7 @@ export default {
 		MessageRecipient,
 		Sight,
 		InventoryHolder,
+		RuneAttacker,
 	],
 	startingInventory,
 	startingSpells: [

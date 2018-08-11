@@ -7,7 +7,9 @@ import Repository from './Repository';
  * so that we can do matrix transposition on them for orienting asymmetric patterns
  *
  * */
-
+// used to make designing patterns easier
+const X = true;
+const _ = false;
 
 // used in chrome dev terminal to copy and paste for a base
 const squareGenerator = (d) => {
@@ -27,10 +29,8 @@ const squareGenerator = (d) => {
 
 export const SINGLE = 'SINGLE';
 
-const patternRepository = new Repository('runeTargetPatterns', {}.constructor);
-// used to make designing patterns easier
-const X = true;
-const _ = false;
+const PatternRepository = new Repository('runeTargetPatterns', {}.constructor);
+
 
 const checkPattern = (name, pattern) => {
 	const yLength = pattern[0].length;
@@ -49,7 +49,7 @@ const checkPattern = (name, pattern) => {
 
 const addPattern = (name, pattern, range) => {
 	checkPattern(name, pattern);
-	patternRepository.define({
+	PatternRepository.define({
 		name: `self-${name}`,
 		pattern: pattern,
 		range,
@@ -59,13 +59,13 @@ const addPattern = (name, pattern, range) => {
 const addSelfAndRanged = (name, pattern, range) => {
 	checkPattern(name, pattern);
 
-	patternRepository.define({
+	PatternRepository.define({
 		name,
 		pattern: pattern,
 		range: range != null ? range : Infinity,
 	});
 
-	patternRepository.define({
+	PatternRepository.define({
 		name: `self-${name}`,
 		pattern: pattern,
 		range: 0,
@@ -135,5 +135,5 @@ const breathCone3 = [
 addPattern('breath-cone-3', breathCone3, 0);
 
 
-export default patternRepository;
+export default PatternRepository;
 

@@ -27,4 +27,6 @@ export default class Spell {
 		this.power = Math.floor(power * multiplier / 100) * (heals ? -1 : 1);
 		this.cost = cost;
 	};
+
+	getTargetPattern = () => this.pattern.pattern
 }
