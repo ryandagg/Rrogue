@@ -1,25 +1,18 @@
-import ROT from 'rot-js';
 import {
 	DISPLAY_OPTIONS,
 	MAP_SIZE,
 	DEBUG_DISPLAY,
-	KEY_DOWN,
-	COMPASS_KEYS,
 } from 'app/game/GameConstants';
 import GameMap from 'app/game/objects/GameMap';
 import { forEachOfLength } from 'app/utils/ArrayUtils';
 import Entity from 'app/game/objects/entities/Entity';
 import playerTemplate from 'app/game/templates/actors/PlayerTemplate';
 import LevelBuilder from 'app/game/objects/LevelBuilder';
-import {switchScreen, refreshScreen, sendMessage} from 'app/game/GameInterface';
-import {GAME_OVER_SCREEN} from 'app/game/game-screens/ScreenNameConstants';
-import {inventoryScreen, pickupScreen, dropScreen} from 'app/game/game-screens/ItemListScreen';
+import {refreshScreen} from 'app/game/GameInterface';
 import {setGamePlaying} from 'app/components/game-info/GameActions';
 import {dispatch} from 'app/game/ReduxUtils';
-import reactOverlay from 'app/game/game-screens/ReactOverlayScreen';
-import {spellScreenTemplate} from 'app/components/screens/SpellScreen.js';
 import {getStartForDiagram} from 'app/utils/MatrixUtils';
-
+import inputHandler from './PlayScreenInputHandler';
 
 const getSpellOverlay = (center, spell) => {
 	let result = {};
@@ -173,10 +166,14 @@ export default class PlayScreen {
 				}
 			});
 		});
-
 	};
 
 
+	/**
+	 *
+	 * input handler functions
+	 *
+	 **/
 	moveN = () => this.move(0, -1);
 	moveS = () => this.move(0, 1);
 	moveE = () => this.move(1, 0);
@@ -191,19 +188,21 @@ export default class PlayScreen {
 
 	setTargetSpell = (index) => {
 		this._spellSelected = this._player.spells[index];
+		// todo: logic for picking default target
 		this._spellCenter = {x: this._player.getX(), y: this._player.getY()};
 		refreshScreen();
+	};
+
+	fireSelectedSpell = () => {
+		this._player.cast(this._spellCenter, this._spellSelected);
+		this._spellSelected = null;
+		this._map.unlockEngine(this._player.getZ());
 	};
 
 	adjustSpellCenter = (x, y) => {
 		this._spellCenter.x += x;
 		this._spellCenter.y += y;
 		refreshScreen();
-	};
-
-
-	fireSelectedSpell = () => {
-
 	};
 
 	moveTargetN = () => this.adjustSpellCenter(0, -1);
@@ -215,173 +214,6 @@ export default class PlayScreen {
 	moveTargetSW = () => this.adjustSpellCenter(-1, 1);
 	moveTargetSE = () => this.adjustSpellCenter(1, 1);
 
-	handleInput = (inputType, inputData) => {
-		if (inputType === KEY_DOWN) {
-			// If the game is over, enter will bring the user to the losing screen.
-			if (this._gameEnded) {
-				if (inputData.keyCode === ROT.VK_RETURN) {
-					switchScreen(GAME_OVER_SCREEN);
-					// Return to make sure the user can't still play
-				}
-				return;
-			}
-
-			if (this._subScreen) {
-				this._subScreen.handleInput(inputType, inputData);
-				return;
-			}
-
-			if (this._spellSelected) {
-				switch (inputData.keyCode) {
-					case COMPASS_KEYS.WEST:
-						this.moveTargetW();
-						break;
-					case COMPASS_KEYS.EAST:
-						this.moveTargetE();
-						break;
-					case COMPASS_KEYS.NORTH:
-						this.moveTargetN();
-						break;
-					case COMPASS_KEYS.SOUTH:
-						this.moveTargetS();
-						break;
-					case COMPASS_KEYS.NORTHWEST:
-						this.moveTargetNW();
-						break;
-					case COMPASS_KEYS.NORTHEAST:
-						this.moveTargetNE();
-						break;
-					case COMPASS_KEYS.SOUTHWEST:
-						this.moveTargetSW();
-						break;
-					case COMPASS_KEYS.SOUTHEAST:
-						this.moveTargetSE();
-						break;
-					case ROT.VK_RETURN:
-						this.fireSelectedSpell();
-						break;
-					default:
-						break;
-				}
-			} else if (inputData.shiftKey) {
-				// looking at .key here because it's easier than keeping track of shift key state
-				// todo: look at .key instead of keyCode for all key presses??
-				switch (inputData.key) {
-					case '>':
-						this.moveDown();
-						break;
-					case '<':
-						this.moveUp();
-						break;
-					default:
-						break;
-				}
-			} else {
-				switch (inputData.keyCode) {
-					case ROT.VK_S: {
-						// Show the spells screen in React
-						this.setSubScreen(reactOverlay(spellScreenTemplate));
-						break;
-					}
-					case ROT.VK_I: {
-						const hasItems = this._player.getItems().filter(x => !!x).length === 0;
-						if (hasItems) {
-							// If the player has no items, send a message and don't take a turn
-							sendMessage(this._player, 'You are not carrying anything!');
-							refreshScreen();
-						} else {
-							// Show the inventory
-							this.setSubScreen(inventoryScreen, {player: this._player, items: this._player.getItems()});
-						}
-						break;
-					}
-					case ROT.VK_D: {
-						const hasItems = this._player.getItems().filter(x => !!x).length === 0;
-						if (hasItems) {
-							// If the player has no items, send a message and don't take a turn
-							sendMessage(this._player, 'You have nothing to drop!');
-							refreshScreen();
-						} else {
-							// Show the drop screen
-							this.setSubScreen(dropScreen, {player: this._player, items: this._player.getItems()});
-						}
-						break;
-					}
-					case ROT.VK_COMMA: {
-						const items = this._map.getItemsAt(this._player.getX(), this._player.getY(), this._player.getZ());
-						// If there are no items, show a message
-						if (!items) {
-							sendMessage(this._player, 'There is nothing here to pick up.');
-						} else {
-							// Show the pickup screen if there are any items
-							this.setSubScreen(pickupScreen, {player: this._player, items});
-							return;
-						}
-						break;
-					}
-					// traditional roguelike bindings
-					case COMPASS_KEYS.WEST:
-						this.moveW();
-						break;
-					case COMPASS_KEYS.EAST:
-						this.moveE();
-						break;
-					case COMPASS_KEYS.NORTH:
-						this.moveN();
-						break;
-					case COMPASS_KEYS.SOUTH:
-						this.moveS();
-						break;
-					case COMPASS_KEYS.NORTHWEST:
-						this.moveNW();
-						break;
-					case COMPASS_KEYS.NORTHEAST:
-						this.moveNE();
-						break;
-					case COMPASS_KEYS.SOUTHWEST:
-						this.moveSW();
-						break;
-					case COMPASS_KEYS.SOUTHEAST:
-						this.moveSE();
-						break;
-					case ROT.VK_PERIOD:
-						this.move(0, 0);
-						break;
-					case ROT.VK_1:
-						this.setTargetSpell(0);
-						break;
-					case ROT.VK_2:
-						this.setTargetSpell(1);
-						break;
-					case ROT.VK_3:
-						this.setTargetSpell(2);
-						break;
-					case ROT.VK_4:
-						this.setTargetSpell(3);
-						break;
-					case ROT.VK_5:
-						this.setTargetSpell(4);
-						break;
-					case ROT.VK_6:
-						this.setTargetSpell(5);
-						break;
-					case ROT.VK_7:
-						this.setTargetSpell(6);
-						break;
-					case ROT.VK_8:
-						this.setTargetSpell(7);
-						break;
-					case ROT.VK_9:
-						this.setTargetSpell(8);
-						break;
-					case ROT.VK_0:
-						this.setTargetSpell(9);
-						break;
-
-					default:
-						break;
-				}
-			}
-		}
-	};
+	// moved out this file because I don't like looking at switch statements
+	handleInput = inputHandler.bind(this);
 }

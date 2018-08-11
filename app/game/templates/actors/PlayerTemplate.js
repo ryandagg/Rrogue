@@ -16,7 +16,7 @@ const startingInventory = [
 	new TargetingRune({patternType: SINGLE}),
 	new Rune({power: 4, cost: 2}),
 	new Rune({power: 7, cost: 4}),
-	new TargetingRune({patternType: DIAMOND_2_EMPTY_SELF}), // todo: comment out, for testing
+	new TargetingRune({patternType: DIAMOND_2_EMPTY_SELF}), // todo: comment out, for testing only
 ];
 
 export default {

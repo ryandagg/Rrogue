@@ -153,7 +153,8 @@ export default class GameMap {
 		});
 	};
 
-	getEntitiesWithinPattern = ({centerX, centerY, depth, pattern, limitRange = Infinity}) => {
+	getEntitiesWithinPattern = ({center, depth, pattern, limitRange = Infinity}) => {
+		const {x: centerX, y: centerY} = center;
 		const result = [];
 		const length = pattern.length;
 		const {x: xStart, y: yStart} = getStartForDiagram({x: centerX, y: centerY}, pattern);

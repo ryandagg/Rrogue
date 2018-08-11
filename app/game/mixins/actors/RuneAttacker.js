@@ -9,12 +9,11 @@ export default {
 		this._attackValue = attackValue;
 		this.spells = startingSpells.concat(...getArrayOfLength(spellSlots - startingSpells.length));
 	},
-	cast: function(centerX, centerY, spell) {
+	cast: function(center, spell) {
 		const targets = this.getMap().getEntitiesWithinPattern({
-			centerX,
-			centerY,
+			center,
 			depth: this.getZ(),
-			pattern: spell.pattern,
+			pattern: spell.getTargetPattern(),
 		});
 
 		targets.forEach(target => {

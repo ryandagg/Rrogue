@@ -41,8 +41,10 @@ export default {
 						this._growthsRemaining--;
 						sendMessageNearby({
 							map: this.getMap(),
-							x: entity.getX(),
-							y: entity.getY(),
+							center: {
+								x: entity.getX(),
+								y: entity.getY(),
+							},
 							depth: entity.getZ(),
 							message: 'The fungus is spreading!',
 							radius: spreadRadius * 3,

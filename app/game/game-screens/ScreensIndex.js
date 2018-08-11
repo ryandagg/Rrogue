@@ -1,5 +1,5 @@
 import StartScreen from './StartScreen';
-import PlayScreen from './PlayScreen';
+import PlayScreen from './play-screen/PlayScreen';
 import GameOverScreen from './GameOverScreen';
 import ItemListScreen from './ItemListScreen';
 import * as SCREEN_NAMES from './ScreenNameConstants';

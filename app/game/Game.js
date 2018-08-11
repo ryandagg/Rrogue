@@ -84,12 +84,12 @@ export default class Game {
 		}
 	};
 
-	sendMessageNearby = ({ map, centerX, centerY, depth, message, radius }) => {
+	sendMessageNearby = ({ map, center, depth, message, radius }) => {
 		// Get the nearby entities
 		// Iterate through nearby entities, sending the message if
 		// they can receive it.
 		map
-			.getEntitiesWithinRadius({centerX, centerY, radius, depth})
+			.getEntitiesWithinRadius({center, radius, depth})
 			.forEach(entity => {
 				if (entity.hasMixin(MESSAGE_RECIPIENT)) {
 					entity.receiveMessage(message);
