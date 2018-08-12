@@ -9,7 +9,7 @@ import ItemRepository from 'app/game/repositories/ItemRepository';
 import {ITEM_MAX} from 'app/game/GameConstants';
 import {dispatch} from 'app/game/ReduxUtils';
 import {setPlayerState, setGameMessages} from 'app/components/game-info/PlayerInfoActions';
-import {getStartForDiagram} from 'app/utils/MatrixUtils';
+import {getStartForPattern} from 'app/utils/MatrixUtils';
 
 
 const templates = [fungusTemplate, batTemplate,newtTemplate];
@@ -31,7 +31,7 @@ export default class GameMap {
 		// create a list which will hold the entities
 		this._entities = arrayOfDepth.map(() => ({}));
 		// create a list which will hold the items
-		this._items = arrayOfDepth.map(() => ({}));
+		this.items = arrayOfDepth.map(() => ({}));
 		// create the engine and scheduler
 		// todo: create 1 engine and scheduler per level?
 		this._schedulers = arrayOfDepth.map(() => new ROT.Scheduler.Simple());
@@ -157,7 +157,7 @@ export default class GameMap {
 		const {x: centerX, y: centerY} = center;
 		const result = [];
 		const length = pattern.length;
-		const {x: xStart, y: yStart} = getStartForDiagram({x: centerX, y: centerY}, pattern);
+		const {x: xStart, y: yStart} = getStartForPattern({x: centerX, y: centerY}, pattern);
 		forEachOfLength(length, (x) => {
 			const entityX = xStart + x;
 			if (Math.abs(centerY - entityX) <= limitRange) {
@@ -271,12 +271,12 @@ export default class GameMap {
 	isExplored = (x, y, z) => this._explored[z][x][y] || false;
 
 	/** items **/
-	getItemsAt = (x, y, z) => this._items[z][getCompoundKey(x, y)];
+	getItemsAt = (x, y, z) => this.items[z][getCompoundKey(x, y)];
 
 	setItemsAt = (x, y, z, items) => {
 		// If our items array is empty, then delete the key from the table.
 		const key = getCompoundKey(x, y);
-		const floorsItems = this._items[z];
+		const floorsItems = this.items[z];
 		if (!items || (items.length === 0 && floorsItems[key])) {
 			delete floorsItems[key];
 		} else {
@@ -287,7 +287,7 @@ export default class GameMap {
 
 	addItem = (x, y, z, item) => {
 		const key = getCompoundKey(x, y);
-		const floorItems = this._items[z];
+		const floorItems = this.items[z];
 		const itemPile = floorItems[key];
 		// If we already have items at that position, simply append the item to the
 		// list of items.

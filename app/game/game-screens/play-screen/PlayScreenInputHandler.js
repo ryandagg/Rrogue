@@ -1,4 +1,4 @@
-import { spellScreenTemplate } from 'app/components/screens/SpellScreen';
+import { spellScreenTemplate } from 'app/components/react-screens/SpellScreen';
 import { dropScreen, inventoryScreen, pickupScreen } from 'app/game/game-screens/ItemListScreen';
 import reactOverlay from 'app/game/game-screens/ReactOverlayScreen';
 import { GAME_OVER_SCREEN } from 'app/game/game-screens/ScreenNameConstants';
@@ -26,31 +26,31 @@ export default function(inputType, inputData) {
 		if (this._spellSelected) {
 			switch (inputData.keyCode) {
 				case COMPASS_KEYS.WEST:
-					this.moveTargetW();
+					this._moveTargetW();
 					break;
 				case COMPASS_KEYS.EAST:
-					this.moveTargetE();
+					this._moveTargetE();
 					break;
 				case COMPASS_KEYS.NORTH:
-					this.moveTargetN();
+					this._moveTargetN();
 					break;
 				case COMPASS_KEYS.SOUTH:
-					this.moveTargetS();
+					this._moveTargetS();
 					break;
 				case COMPASS_KEYS.NORTHWEST:
-					this.moveTargetNW();
+					this._moveTargetNW();
 					break;
 				case COMPASS_KEYS.NORTHEAST:
-					this.moveTargetNE();
+					this._moveTargetNE();
 					break;
 				case COMPASS_KEYS.SOUTHWEST:
-					this.moveTargetSW();
+					this._moveTargetSW();
 					break;
 				case COMPASS_KEYS.SOUTHEAST:
-					this.moveTargetSE();
+					this._moveTargetSE();
 					break;
 				case ROT.VK_RETURN:
-					this.fireSelectedSpell();
+					this._fireSelectedSpell();
 					break;
 				default:
 					break;
@@ -60,10 +60,10 @@ export default function(inputType, inputData) {
 			// todo: look at .key instead of keyCode for all key presses??
 			switch (inputData.key) {
 				case '>':
-					this.moveDown();
+					this._moveDown();
 					break;
 				case '<':
-					this.moveUp();
+					this._moveUp();
 					break;
 				default:
 					break;
@@ -113,61 +113,61 @@ export default function(inputType, inputData) {
 				}
 				// traditional roguelike bindings
 				case COMPASS_KEYS.WEST:
-					this.moveW();
+					this._moveW();
 					break;
 				case COMPASS_KEYS.EAST:
-					this.moveE();
+					this._moveE();
 					break;
 				case COMPASS_KEYS.NORTH:
-					this.moveN();
+					this._moveN();
 					break;
 				case COMPASS_KEYS.SOUTH:
-					this.moveS();
+					this._moveS();
 					break;
 				case COMPASS_KEYS.NORTHWEST:
-					this.moveNW();
+					this._moveNW();
 					break;
 				case COMPASS_KEYS.NORTHEAST:
-					this.moveNE();
+					this._moveNE();
 					break;
 				case COMPASS_KEYS.SOUTHWEST:
-					this.moveSW();
+					this._moveSW();
 					break;
 				case COMPASS_KEYS.SOUTHEAST:
-					this.moveSE();
+					this._moveSE();
 					break;
 				case ROT.VK_PERIOD:
 					this.move(0, 0);
 					break;
 				case ROT.VK_1:
-					this.setTargetSpell(0);
+					this._setTargetSpell(0);
 					break;
 				case ROT.VK_2:
-					this.setTargetSpell(1);
+					this._setTargetSpell(1);
 					break;
 				case ROT.VK_3:
-					this.setTargetSpell(2);
+					this._setTargetSpell(2);
 					break;
 				case ROT.VK_4:
-					this.setTargetSpell(3);
+					this._setTargetSpell(3);
 					break;
 				case ROT.VK_5:
-					this.setTargetSpell(4);
+					this._setTargetSpell(4);
 					break;
 				case ROT.VK_6:
-					this.setTargetSpell(5);
+					this._setTargetSpell(5);
 					break;
 				case ROT.VK_7:
-					this.setTargetSpell(6);
+					this._setTargetSpell(6);
 					break;
 				case ROT.VK_8:
-					this.setTargetSpell(7);
+					this._setTargetSpell(7);
 					break;
 				case ROT.VK_9:
-					this.setTargetSpell(8);
+					this._setTargetSpell(8);
 					break;
 				case ROT.VK_0:
-					this.setTargetSpell(9);
+					this._setTargetSpell(9);
 					break;
 
 				default:

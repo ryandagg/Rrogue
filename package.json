@@ -202,9 +202,11 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
+    "@material-ui/core": "^1.4.3",
     "babel-plugin-jsx-display-if": "^3.0.0",
     "devtron": "^1.4.0",
     "electron-debug": "^1.5.0",
+    "flexboxgrid": "^6.3.1",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
     "react": "^16.4.0",

@@ -19,7 +19,7 @@ export default class ItemListScreen {
 	setup = ({player, items}, handleClose) => {
 		this._player = player;
 		// Should be called before switching to the screen.
-		this._items = items;
+		this.items = items;
 		// Clean set of selected indices
 		this._selectedIndices = {};
 		this._handleClose = handleClose;
@@ -30,7 +30,7 @@ export default class ItemListScreen {
 		display.drawText(0, 0, this._caption);
 		let row = 0;
 
-		this._items.forEach((item, i) => {
+		this.items.forEach((item, i) => {
 			// If we have an item, we want to render it.
 			if (item) {
 				// Get the letter matching the item's index
@@ -49,7 +49,7 @@ export default class ItemListScreen {
 	executeOkFunction = () => {
 		// Gather the selected items.
 		const selectedItems = Object.keys(this._selectedIndices).reduce((result, key) => {
-			result[key] = this._items[key];
+			result[key] = this.items[key];
 			return result;
 		});
 
@@ -80,7 +80,7 @@ export default class ItemListScreen {
 				// Check if it maps to a valid item by subtracting 'a' from the character
 				// to know what letter of the alphabet we used.
 				const index = inputData.keyCode - ROT.VK_A;
-				if (this._items[index]) {
+				if (this.items[index]) {
 					// If multiple selection is allowed, toggle the selection status, else
 					// select the item and exit the screen
 					if (this._canSelectMultipleItems) {

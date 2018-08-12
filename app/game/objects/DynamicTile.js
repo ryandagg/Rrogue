@@ -8,7 +8,7 @@ export default class DynamicTile extends Tile {
 		super(properties);
 		// Instantiate any properties from the passed object
 		const { name, mixins = [] } = properties;
-		this._name = name || '';
+		this.name = name || '';
 
 		this._map = null;
 
@@ -60,12 +60,12 @@ export default class DynamicTile extends Tile {
 	};
 
 
-	getName = () => this._name;
+	getName = () => this.name;
 	setName = name => {
-		this._name = name;
+		this.name = name;
 	};
 
-	describe = () => this._name;
+	describe = () => this.name;
 	describeA = (capitalize) => {
 		// Optional parameter to capitalize the a/an.
 		const prefixes = capitalize ? ['A', 'An'] : ['a', 'an'];

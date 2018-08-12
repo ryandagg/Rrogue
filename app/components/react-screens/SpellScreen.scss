@@ -1,0 +1,24 @@
+.spellBox {
+    margin: 2px;
+    height: 100px;
+    width: 70px;
+    display: block;
+    float: left;
+}
+
+.spellRow {
+    display: block;
+    width: 100%;
+}
+
+.runeBox {
+    .targetRune {
+        background-color: aqua;
+    }
+
+    margin: 2px;
+    height: 100px;
+    width: 70px;
+    display: block;
+    float: left;
+}

@@ -13,18 +13,19 @@ import {SINGLE, DIAMOND_2_EMPTY_SELF} from 'app/game/repositories/PatternReposit
 
 
 const startingInventory = [
-	new TargetingRune({patternType: SINGLE}),
-	new Rune({power: 4, cost: 2}),
-	new Rune({power: 7, cost: 4}),
-	new TargetingRune({patternType: DIAMOND_2_EMPTY_SELF}), // todo: comment out, for testing only
+	new TargetingRune({patternType: SINGLE, name: 'self'}),
+	new Rune({power: 4, cost: 2, name: 'la'}),
+	new Rune({power: 7, cost: 4, name: 'da'}),
+	new TargetingRune({patternType: DIAMOND_2_EMPTY_SELF, name: 'diamond'}), // todo: comment out, for testing only
 ];
 
+const sightRadius = 4;
 export default {
 	character: '@',
 	foreground: 'white',
 	background: 'black',
 	maxHp: 20,
-	sightRadius: 6,
+	sightRadius,
 	mixins: [
 		Movable,
 		PlayerActor,
@@ -44,6 +45,7 @@ export default {
 				startingInventory[1],
 			],
 			name: 'weak sauce',
+			maxSize: sightRadius,
 		}),
 		new Spell({
 			targetRune: startingInventory[0],
@@ -52,6 +54,7 @@ export default {
 				startingInventory[2],
 			],
 			name: 'hot sauce',
+			maxSize: sightRadius,
 		}),
 		new Spell({ // todo: testing only
 			targetRune: startingInventory[3],
@@ -60,6 +63,7 @@ export default {
 				startingInventory[2],
 			],
 			name: 'hot sauce testing',
+			maxSize: sightRadius,
 		}),
 	],
 };

@@ -7,7 +7,7 @@ import { initEngine, getCanvasElement } from '../game/GameInterface';
 import {connect} from 'react-redux';
 import PlayerStatsView from 'app/components/game-info/player-stats/PlayerStatsView';
 import GameMessages from 'app/components/game-info/game-messages/GameMessagesView';
-import SpellScreen from 'app/components/screens/SpellScreen';
+import SpellScreen from 'app/components/react-screens/SpellScreen';
 import {SPELL_SCREEN} from 'app/components/game-overlay-modal/GameOverlayConstants';
 
 const Home = ({isPlaying, modalType}) => {

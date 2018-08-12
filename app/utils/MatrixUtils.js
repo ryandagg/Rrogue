@@ -1,5 +1,5 @@
 // todo: this name fucking sucks
-export const getStartForDiagram = (center, matrix) => {
+export const getStartForPattern = (center, matrix) => {
 	const length = matrix.length;
 	const halfLength = Math.floor(length/2);
 	const xStart = center.x - halfLength;

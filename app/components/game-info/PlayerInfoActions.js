@@ -5,6 +5,8 @@ export const setPlayerState = (player) => (dispatch) => {
 	const payload = {
 		hp: player.getHp(),
 		maxHp: player.getMaxHp(),
+		items: player.items,
+		spells: player.spells,
 	};
 	dispatch({type: SET_PLAYER_STATE, payload});
 };

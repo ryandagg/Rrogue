@@ -11,14 +11,15 @@ import LevelBuilder from 'app/game/objects/LevelBuilder';
 import {refreshScreen} from 'app/game/GameInterface';
 import {setGamePlaying} from 'app/components/game-info/GameActions';
 import {dispatch} from 'app/game/ReduxUtils';
-import {getStartForDiagram} from 'app/utils/MatrixUtils';
+import {getStartForPattern} from 'app/utils/MatrixUtils';
 import inputHandler from './PlayScreenInputHandler';
+
 
 const getSpellOverlay = (center, spell) => {
 	let result = {};
-	const pattern = spell.getTargetPattern();
-	const {x: xStart, y: yStart} = getStartForDiagram(center, pattern);
-	spell.getTargetPattern().forEach((row, xIndex) => {
+	const pattern = spell ? spell.getTargetPattern() : [];
+	const {x: xStart, y: yStart} = getStartForPattern(center, pattern);
+	pattern.forEach((row, xIndex) => {
 		let newRow = {};
 		row.forEach((isIn, yIndex) => {
 			newRow[yStart + yIndex] = isIn;
@@ -127,7 +128,7 @@ export default class PlayScreen {
 				this._map.setExplored(x, y, currentDepth, true);
 			});
 
-		const spellOverlay = this._spellSelected ? getSpellOverlay(this._spellCenter, this._spellSelected) : undefined;
+		const spellOverlay = getSpellOverlay(this._spellCenter, this._spellSelected);
 
 		forEachOfLength(DISPLAY_OPTIONS.width, x => {
 			// Add all the tiles
@@ -159,7 +160,7 @@ export default class PlayScreen {
 						y,
 						glyph.getChar(),
 						visible ? glyph.getForeground() : 'darkGray',
-						spellOverlay && spellOverlay[offsetX] && spellOverlay[offsetX][offsetY]
+						spellOverlay[offsetX] && spellOverlay[offsetX][offsetY]
 							? 'lightBlue'
 							: glyph.getBackground(),
 					);
@@ -174,45 +175,45 @@ export default class PlayScreen {
 	 * input handler functions
 	 *
 	 **/
-	moveN = () => this.move(0, -1);
-	moveS = () => this.move(0, 1);
-	moveE = () => this.move(1, 0);
-	moveW = () => this.move(-1, 0);
-	moveNW = () => this.move(-1, -1);
-	moveNE = () => this.move(1, -1);
-	moveSW = () => this.move(-1, 1);
-	moveSE = () => this.move(1, 1);
-	moveDown = () => this.move(0, 0, 1);
-	moveUp = () => this.move(0, 0, -1);
+	_moveN = () => this.move(0, -1);
+	_moveS = () => this.move(0, 1);
+	_moveE = () => this.move(1, 0);
+	_moveW = () => this.move(-1, 0);
+	_moveNW = () => this.move(-1, -1);
+	_moveNE = () => this.move(1, -1);
+	_moveSW = () => this.move(-1, 1);
+	_moveSE = () => this.move(1, 1);
+	_moveDown = () => this.move(0, 0, 1);
+	_moveUp = () => this.move(0, 0, -1);
 
 
-	setTargetSpell = (index) => {
+	_setTargetSpell = (index) => {
 		this._spellSelected = this._player.spells[index];
 		// todo: logic for picking default target
 		this._spellCenter = {x: this._player.getX(), y: this._player.getY()};
 		refreshScreen();
 	};
 
-	fireSelectedSpell = () => {
+	_fireSelectedSpell = () => {
 		this._player.cast(this._spellCenter, this._spellSelected);
 		this._spellSelected = null;
 		this._map.unlockEngine(this._player.getZ());
 	};
 
-	adjustSpellCenter = (x, y) => {
+	_adjustSpellCenter = (x, y) => {
 		this._spellCenter.x += x;
 		this._spellCenter.y += y;
 		refreshScreen();
 	};
 
-	moveTargetN = () => this.adjustSpellCenter(0, -1);
-	moveTargetS = () => this.adjustSpellCenter(0, 1);
-	moveTargetE = () => this.adjustSpellCenter(1, 0);
-	moveTargetW = () => this.adjustSpellCenter(-1, 0);
-	moveTargetNW = () => this.adjustSpellCenter(-1, -1);
-	moveTargetNE = () => this.adjustSpellCenter(1, -1);
-	moveTargetSW = () => this.adjustSpellCenter(-1, 1);
-	moveTargetSE = () => this.adjustSpellCenter(1, 1);
+	_moveTargetN = () => this._adjustSpellCenter(0, -1);
+	_moveTargetS = () => this._adjustSpellCenter(0, 1);
+	_moveTargetE = () => this._adjustSpellCenter(1, 0);
+	_moveTargetW = () => this._adjustSpellCenter(-1, 0);
+	_moveTargetNW = () => this._adjustSpellCenter(-1, -1);
+	_moveTargetNE = () => this._adjustSpellCenter(1, -1);
+	_moveTargetSW = () => this._adjustSpellCenter(-1, 1);
+	_moveTargetSE = () => this._adjustSpellCenter(1, 1);
 
 	// moved out this file because I don't like looking at switch statements
 	handleInput = inputHandler.bind(this);

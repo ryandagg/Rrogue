@@ -1,27 +1,18 @@
 import React from 'react';
 import Modal from 'react-modal';
-import customStyles from './GameOverlay.scss';
-import {connect} from 'react-redux';
-import {compose} from 'recompose';
 
-// Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
-// Modal.setAppElement('#yourAppElement');
-
-const GameOverlay = ({modalIsOpen, afterOpenModal, closeModal, setRef}) => {
+const GameOverlay = ({children, modalIsOpen, afterOpenModal, closeModal, overlayStyle = {}}) => {
 	return (
 		<Modal
+			ariaHideApp={false}
 			isOpen={modalIsOpen}
 			onAfterOpen={afterOpenModal}
 			onRequestClose={closeModal}
-			style={customStyles}
+			style={{overlay: {fontWeight: 'bold', color: 'black', ...overlayStyle}}}
+			shouldCloseOnEsc={true}
 			contentLabel="Example Modal"
 		>
-			<h2 ref={setRef}>Hello</h2>
-			<button onClick={closeModal}>close</button>
-			<div>I am a modal</div>
-			<table>
-				<tr><td>a</td></tr>
-			</table>
+			{children}
 		</Modal>
 	);
 };

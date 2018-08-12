@@ -1,10 +1,12 @@
+import { getArrayOfLength } from 'app/utils/ArrayUtils';
 
 
 export default class Spell {
-	constructor({targetRune, runes}) {
-		this._runes = runes;
-		this._targetRune = targetRune;
+	constructor({targetRune, runes, name, maxSize}) {
+		this.runes = runes.concat(getArrayOfLength(maxSize).slice(runes.length));
+		this.targetRune = targetRune;
 		this.pattern = targetRune.pattern;
+		this.name = name;
 		let power = targetRune.power;
 		let cost = targetRune.cost;
 		let multiplier = 100 + (targetRune.multiplier || 0);

@@ -6,22 +6,22 @@ export default {
 	init: function({startingInventory = [], inventorySlots = 10}) {
 		// Default to 10 inventory slots.
 		// Set up an empty inventory.
-		this._items = startingInventory.concat(getArrayOfLength(inventorySlots - startingInventory.length));
+		this.items = startingInventory.concat(getArrayOfLength(inventorySlots - startingInventory.length));
 	},
 
 	getItems: function() {
-		return this._items;
+		return this.items;
 	},
 
 	getItem: function(i) {
-		return this._items[i];
+		return this.items[i];
 	},
 
 	addItem: function(item) {
-		const index = this._items.findIndex(item => !item);
+		const index = this.items.findIndex(item => !item);
 		// Try to find a slot, returning true only if we could add the item.
 		if (index > -1) {
-			this._items[index] = item;
+			this.items[index] = item;
 			return true;
 		}
 		return false;
@@ -29,12 +29,12 @@ export default {
 
 	removeItem: function(i) {
 		// Clear the inventory slot.
-		this._items[i] = undefined;
+		this.items[i] = undefined;
 	},
 
 	canAddItem: function() {
 		// Check if we have an empty slot.
-		return this._items.findIndex(item => !item) > -1;
+		return this.items.findIndex(item => !item) > -1;
 	},
 
 	pickupItems: function(indices) {
@@ -64,9 +64,9 @@ export default {
 	},
 	dropItem: function(i) {
 		// Drops an item to the current map tile
-		if (this._items[i]) {
+		if (this.items[i]) {
 			if (this._map) {
-				this._map.addItem(this.getX(), this.getY(), this.getZ(), this._items[i]);
+				this._map.addItem(this.getX(), this.getY(), this.getZ(), this.items[i]);
 			}
 			this.removeItem(i);
 		}
