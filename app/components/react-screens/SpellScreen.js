@@ -1,24 +1,10 @@
 import React from 'react';
-import {SPELL_SCREEN} from 'app/components/game-overlay-modal/GameOverlayConstants';
-import {connect} from 'react-redux';
-import {compose, withState, withProps} from 'recompose';
 import GameOverlay from 'app/components/game-overlay-modal/GameOverlay.js';
 import styles from './SpellScreen.scss';
 import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
-import Spell from 'app/game/objects/Spell';
-import { withStyles } from '@material-ui/core/styles';
+import vmEnhancer, {TARGET_RUNE_INDEX} from './SpellScreenViewModel';
 
-
-const spellsPerRow = 10;
-const TARGET_RUNE_INDEX = 'TARGET_RUNE_INDEX';
-// used by PlayScreen to act as a bridge between rot-js
-export const spellScreenTemplate = {
-	modalType: SPELL_SCREEN,
-	handleInput: (inputType, inputData) => {
-		console.log('inputType, inputData: ', inputType, ', ', inputData);
-	},
-};
 
 const RuneButton = ({name, index, onClick, className, wrapperClassName, onMouseEnter}) => (
 	<li className={wrapperClassName}>
@@ -81,7 +67,7 @@ const SpellScreen = (props) => {
 						className="col-md-offset-6 col-md-3"
 						onChange={({target}) => updateSpell({name: target.value})}
 						defaultValue={selectedSpell.name}
-						styles={{float: 'right'}}
+						placeholder="new spell name"
 					/>
 				</div>
 				<div className="row">
@@ -136,75 +122,6 @@ const SpellScreen = (props) => {
 
 SpellScreen.displayName = 'SpellScreen';
 
-export default compose(
-	withStyles(theme => ({
-		button: {
-			margin: theme.spacing.unit,
-			fontSize: '8pt',
-		},
-	})),
-	withState('isEditingSpell', 'setIsEditingSpell', false),
-	withState('selectedSpellIndex', 'setSelectedSpellIndex'),
-	withState('selectedRuneSlotIndex', 'setSelectedRuneSlotIndex'),
-	withState('selectedRuneViewIndex', 'setSelectedRuneViewIndex'),
-	connect(({gameInfo = {}}) => {
-		const {player = {}} = gameInfo;
-		const {spells, items} = player;
-		return {
-			rawSpells: spells,
-			runes: items,
-		};
-	}),
-	withState('spells', 'setSpells', ({rawSpells}) => rawSpells),
-	withProps(({spells, selectedSpellIndex, selectedRuneSlotIndex, runes, setSpells, selectedRuneViewIndex}) => {
-		const updateSpell = (properties) => {
-			spells[selectedSpellIndex] = {...spells[selectedSpellIndex], ...properties};
-			setSpells(spells);
-		};
 
-		const selectedSpell = spells[selectedSpellIndex];
-		let selectedRune = selectedSpell && selectedRuneSlotIndex ?  selectedSpell.runes[selectedRuneSlotIndex] : undefined;
-		if (selectedSpell && selectedRuneSlotIndex === TARGET_RUNE_INDEX) selectedRune = selectedSpell.targetRune;
-		const targetingRuneSelected = selectedRuneSlotIndex === TARGET_RUNE_INDEX;
-
-
-		return {
-			selectedSpell,
-			selectedRune,
-			selectedHoverRune: runes[selectedRuneViewIndex],
-			spellRows: spells.reduce((result, spell = {}, index) => {
-				if (index % spellsPerRow === 0) {
-					result.push([]);
-				}
-				result[result.length - 1].push({...spell, index});
-				return result;
-			}, []),
-			updateSpell,
-			runes: runes.reduce((result, rune, index) => {
-				if (!rune) return result;
-
-				let doAdd = false;
-				if (targetingRuneSelected && rune.pattern) {
-					doAdd = true;
-				} else if (!targetingRuneSelected && !rune.pattern) {
-					doAdd = true;
-				}
-
-				if (doAdd) {
-					result.push({...rune, index});
-				}
-
-				return result;
-			}, []),
-			setSpellRune: (rune) => {
-				if (targetingRuneSelected) {
-					selectedSpell.targetRune = rune;
-				} else {
-					selectedSpell.runes[selectedRuneSlotIndex] = rune;
-				}
-				setSpells(spells);
-			},
-		};
-	})
-)(SpellScreen);
+export default vmEnhancer(SpellScreen);
 

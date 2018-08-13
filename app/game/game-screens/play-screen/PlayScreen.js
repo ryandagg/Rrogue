@@ -8,7 +8,7 @@ import { forEachOfLength } from 'app/utils/ArrayUtils';
 import Entity from 'app/game/objects/entities/Entity';
 import playerTemplate from 'app/game/templates/actors/PlayerTemplate';
 import LevelBuilder from 'app/game/objects/LevelBuilder';
-import {refreshScreen} from 'app/game/GameInterface';
+import {refreshScreen, setPlayer} from 'app/game/GameInterface';
 import {setGamePlaying} from 'app/components/game-info/GameActions';
 import {dispatch} from 'app/game/ReduxUtils';
 import {getStartForPattern} from 'app/utils/MatrixUtils';
@@ -73,6 +73,7 @@ export default class PlayScreen {
 
 		// Create our player and set the position
 		this._player = new Entity(playerTemplate);
+		setPlayer(this._player);
 		this._map = new GameMap(tiles, this._player);
 
 		// this prevents some issues with dependencies firing upon start up that require this

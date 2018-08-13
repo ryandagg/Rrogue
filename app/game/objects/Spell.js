@@ -7,12 +7,20 @@ export default class Spell {
 		this.targetRune = targetRune;
 		this.pattern = targetRune.pattern;
 		this.name = name;
+		this._updateCalcs();
+	};
+
+	getTargetPattern = () => this.pattern.pattern;
+
+	_updateCalcs = () => {
+		const targetRune = this.targetRune;
+
 		let power = targetRune.power;
 		let cost = targetRune.cost;
 		let multiplier = 100 + (targetRune.multiplier || 0);
 		let duplicates = {};
 		let heals = false;
-		runes.forEach(rune => {
+		this.runes.forEach((rune = {}) => {
 			power += rune.power;
 			cost += rune.cost;
 			// only the first usage of a rune instance gets the multiplier effect
@@ -30,5 +38,9 @@ export default class Spell {
 		this.cost = cost;
 	};
 
-	getTargetPattern = () => this.pattern.pattern
+	setRune = (index, rune) => {
+		this.runes[index] = rune;
+		this._updateCalcs();
+	};
+
 }

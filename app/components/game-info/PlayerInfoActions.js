@@ -7,6 +7,7 @@ export const setPlayerState = (player) => (dispatch) => {
 		maxHp: player.getMaxHp(),
 		items: player.items,
 		spells: player.spells,
+		sightRadius: player.sightRadius,
 	};
 	dispatch({type: SET_PLAYER_STATE, payload});
 };

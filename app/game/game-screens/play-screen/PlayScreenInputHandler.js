@@ -1,4 +1,4 @@
-import { spellScreenTemplate } from 'app/components/react-screens/SpellScreen';
+import { spellScreenTemplate } from 'app/components/react-screens/SpellScreenViewModel';
 import { dropScreen, inventoryScreen, pickupScreen } from 'app/game/game-screens/ItemListScreen';
 import reactOverlay from 'app/game/game-screens/ReactOverlayScreen';
 import { GAME_OVER_SCREEN } from 'app/game/game-screens/ScreenNameConstants';

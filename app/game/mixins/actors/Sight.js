@@ -4,12 +4,12 @@ export default {
 	name: SIGHT,
 	groupName: SIGHT_GROUP,
 	init: function({sightRadius}) {
-		this._sightRadius = sightRadius || 5;
+		this.sightRadius = sightRadius || 5;
 	},
 	getSightRadius: function() {
-		return this._sightRadius;
+		return this.sightRadius;
 	},
 	setSightRadius: function(newRadius) {
-		this._sightRadius = newRadius;
+		this.sightRadius = newRadius;
 	},
 };

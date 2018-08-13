@@ -2,7 +2,6 @@ import Game from './Game';
 
 let game;
 
-
 export const getDisplay = () => game.getDisplay();
 export const getCanvasElement = () => game.getCanvasElement();
 export const initEngine = ({ displayWidth, displayHeight }) => {
@@ -20,3 +19,8 @@ export const refreshScreen = (...args) => game.refreshScreen(...args);
 export const sendMessage = (...args) => game.sendMessage(...args);
 export const sendMessageNearby = (...args) => game.sendMessageNearby(...args);
 export const setGameOver = (...args) => game.setGameOver(...args);
+
+
+let player;
+export const setPlayer = (newPlayer) => player = newPlayer;
+export const setPlayerProps = (props) => player = {...player, ...props};
